@@ -1819,8 +1819,8 @@ body.touch-device .controls-hint { display: none; }
 
 
 /* Ситуационные RPG-тренировки */
-.sim-launch{position:fixed;right:18px;bottom:18px;z-index:8;background:#173b5d;color:white;border:1px solid #59dce9;border-radius:24px;padding:12px 18px;cursor:pointer;font-weight:bold}
-#sim-modal{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;background:#020916df;padding:18px;color:#f4f9ff}#sim-modal.open{display:flex}.sim-panel{max-width:620px;width:100%;padding:28px;border-radius:20px;background:#102744;border:1px solid #59dce9}.sim-panel h2{margin:0 0 12px}.sim-choices{display:grid;gap:10px;margin-top:20px}.sim-choice{padding:13px;background:#173b5d;border:1px solid #47789d;border-radius:12px;color:white;text-align:left;cursor:pointer}.sim-choice:hover{border-color:#67e5ed}.sim-feedback{min-height:44px;margin:15px 0;color:#b7edc8}.sim-close{float:right}
+.sim-launch{position:fixed;right:18px;bottom:18px;z-index:20;background:#173b5d;color:white;border:1px solid #59dce9;border-radius:24px;padding:12px 18px;cursor:pointer;font-weight:bold}
+#sim-modal{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;background:#020916df;padding:18px;color:#f4f9ff}#sim-modal.open{display:flex}.sim-panel{max-width:620px;width:100%;padding:28px;border-radius:20px;background:#102744;border:1px solid #59dce9}.sim-panel h2{margin:0 0 12px}.sim-choices{display:grid;gap:10px;margin-top:20px}.sim-choice{padding:13px;background:#173b5d;border:1px solid #47789d;border-radius:12px;color:white;text-align:left;cursor:pointer}.sim-choice:hover{border-color:#67e5ed}.sim-feedback{min-height:44px;margin:15px 0;color:#b7edc8}.sim-close{float:right}
 
 .rpg-hub{margin:18px 0 24px;padding:20px;border:1px solid rgba(0,184,212,.4);border-radius:18px;background:linear-gradient(135deg,#f5fbff,#e9f5ff);box-shadow:var(--shadow);color:var(--text)}.rpg-hub-head{display:flex;justify-content:space-between;align-items:center}.hub-kicker{font-size:.72rem;letter-spacing:.15em;font-weight:800;color:var(--primary-dark)}.rpg-hub h3{margin:5px 0}.rpg-hub p{margin:0;color:var(--text-dim)}.hub-emblem{font-size:2.2rem}.xp-track{height:10px;background:#cfdeec;border-radius:20px;margin:14px 0;overflow:hidden}.xp-track span{display:block;height:100%;width:0;background:var(--gradient-primary);transition:width .3s}.rpg-hub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.hub-stat{padding:10px;background:#fff;border-radius:12px;text-align:center}.hub-stat b,.hub-stat small{display:block}.hub-stat b{font-size:1.3rem;color:var(--primary-dark)}.hub-stat small{color:var(--text-dim)}.rpg-hub h4{margin:16px 0 8px}.rpg-achievements{display:flex;gap:8px;flex-wrap:wrap}.rpg-badge{padding:7px 10px;border-radius:20px;background:#fff;border:1px solid var(--border);font-size:.84rem}.rpg-badge.locked{opacity:.42;filter:grayscale(1)}.rpg-upgrades{display:grid;gap:8px;margin-top:10px}.rpg-upgrade{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 11px;border-radius:10px;background:#fff}.rpg-upgrade button{border:0;border-radius:8px;padding:7px 10px;background:var(--primary);color:#fff;cursor:pointer}.rpg-upgrade button:disabled{opacity:.45;cursor:not-allowed}
 </style>
@@ -16331,6 +16331,9 @@ function showNotification(text, type = "info") {
 function showScreen(id) {
     document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
     document.getElementById(id)?.classList.add("active");
+    // Bonus-симулятор доступен из главного меню и профиля, но не перекрывает HUD в бою.
+    const simulatorButton = document.getElementById("sim-launch");
+    if (simulatorButton) simulatorButton.style.display = ["menu-screen", "profile-screen"].includes(id) ? "inline-flex" : "none";
 }
 
 // Экранирование HTML
@@ -16947,7 +16950,7 @@ function closeTheory() {
 
 function renderRpgHub() {
     const progress=Storage.getProgress(), done=Object.values(progress.completedLevels||{});
-    const xp=done.reduce((n,r)=>n+Math.max(0,Number(r.score)||0)+Math.max(0,Number(r.stars)||0)*25,0);
+    const xp=done.reduce((n,r)=>n+Math.max(0,Number(r.score)||0)+Math.max(0,Number(r.stars)||0)*25,0)+Math.max(0,Number(localStorage.getItem('pq7_sim_xp'))||0);
     const rank=Math.floor(xp/100)+1, rem=xp%100;
     const perks=JSON.parse(localStorage.getItem('pq7_rpg_perks')||'{"shield":0,"repair":0,"focus":0}');
     const spend=Math.max(0,Math.floor(xp/100)-Object.values(perks).reduce((a,b)=>a+b,0));
@@ -17796,10 +17799,12 @@ Object.keys(ASSIGNMENT_RESULT_I18N).forEach(lang => {
   {q:'У тележки на наклонной рампе ослаб тормоз. Как безопаснее остановить её?',a:['Подставить упругий буфер у основания рампы','Толкнуть тележку вверх голыми руками','Уменьшить массу тележки грузом'],ok:0,why:'Верно: буфер увеличит время торможения и уменьшит силу удара; запаситесь безопасной зоной.'},
   {q:'В походе нужно вскипятить воду, расходуя меньше энергии. Что выбрать?',a:['Открытый широкий котёл на ветру','Крышку на котёл и защиту от ветра','Налить воду в тонкую открытую чашку'],ok:1,why:'Верно: крышка и защита уменьшают потери тепла в окружающую среду.'},
   {q:'На мокром полу нужно переместить тяжёлый ящик. Какой план разумнее?',a:['Тянуть рывками за тонкий провод','Подложить ролики и толкать плавно','Смазать пол водой'],ok:1,why:'Верно: ролики уменьшают трение скольжения; плавное усилие безопаснее рывков.'}
- ];let scene=0,solved=0;
- function render(){const x=scenes[scene];byId('sim-title').textContent=`Ситуация ${scene+1} из ${scenes.length}`;byId('sim-question').textContent=x.q;byId('sim-feedback').textContent='';byId('sim-next').style.display='none';byId('sim-choices').innerHTML='';x.a.forEach((t,i)=>{const b=document.createElement('button');b.className='sim-choice';b.textContent=t;b.onclick=()=>{byId('sim-choices').querySelectorAll('button').forEach(e=>e.disabled=true);if(i===x.ok){solved++;byId('sim-feedback').textContent=x.why;}else byId('sim-feedback').textContent='Не совсем. Подумай о силах, энергии и безопасности. '+x.why;byId('sim-next').style.display='inline-flex';};byId('sim-choices').appendChild(b)});}
- byId('sim-launch').onclick=()=>{byId('sim-modal').classList.add('open');scene=0;render()};byId('sim-close').onclick=()=>byId('sim-modal').classList.remove('open');
- byId('sim-next').onclick=()=>{scene++;if(scene<scenes.length)render();else{byId('sim-title').textContent='Тренировка завершена!';byId('sim-question').textContent=`Ты решил(а) верно ${solved} из ${scenes.length} ситуаций. Используй физику, чтобы принимать решения в игре и в жизни.`;byId('sim-choices').innerHTML='';byId('sim-feedback').textContent='Награда: значок «Инженер решений»';byId('sim-next').style.display='none';localStorage.setItem('pq7_sim_badge','earned')}};
+ ];let scene=0,solved=0,earned=[];
+ function render(){const x=scenes[scene];byId('sim-title').textContent=`Ситуация ${scene+1} из ${scenes.length}`;byId('sim-question').textContent=x.q;byId('sim-feedback').textContent='Выбери решение. За верный ответ получишь опыт.';byId('sim-next').style.display='none';byId('sim-choices').innerHTML='';x.a.forEach((t,i)=>{const b=document.createElement('button');b.className='sim-choice';b.textContent=t;b.onclick=()=>{if(i===x.ok){if(!earned.includes(scene)){earned.push(scene);solved++;let xp=Number(localStorage.getItem('pq7_sim_xp'))||0;localStorage.setItem('pq7_sim_xp',String(xp+20));}byId('sim-feedback').textContent='✅ '+x.why+' +20 XP';byId('sim-choices').querySelectorAll('button').forEach(e=>e.disabled=true);byId('sim-next').style.display='inline-flex';}else{byId('sim-feedback').textContent='↻ Попробуй ещё раз. Подсказка: '+x.why;}};byId('sim-choices').appendChild(b)});}
+ function closeSim(){byId('sim-modal').classList.remove('open');if(typeof renderRpgHub==='function')renderRpgHub();}
+ byId('sim-launch').onclick=()=>{scene=0;solved=0;earned=[];byId('sim-modal').classList.add('open');render()};byId('sim-close').onclick=closeSim;
+ byId('sim-next').onclick=()=>{scene++;if(scene<scenes.length)render();else{byId('sim-title').textContent=solved===scenes.length?'Тренировка завершена!':'Тренировка окончена';byId('sim-question').textContent=`Решено верно: ${solved} из ${scenes.length}. Возвращайся к ситуации и попробуй набрать больше XP.`;byId('sim-choices').innerHTML='';if(solved===scenes.length){localStorage.setItem('pq7_sim_badge','earned');byId('sim-feedback').textContent='🏅 Получено достижение «Инженер решений»! Ты заработал(а) 60 XP.';}else byId('sim-feedback').textContent=`Получено ${solved*20} XP. Для значка нужно решить все ситуации.`;byId('sim-next').style.display='none';if(typeof renderRpgHub==='function')renderRpgHub()}};
+ byId('sim-modal').addEventListener('click',e=>{if(e.target===byId('sim-modal'))closeSim()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&byId('sim-modal').classList.contains('open'))closeSim()});
 })();
 </script>
 </body>
