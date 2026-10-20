@@ -1763,6 +1763,11 @@ body.touch-device .controls-hint { display: none; }
 .story-fold{margin:8px 0;border:1px solid var(--border-light);border-radius:12px;background:var(--bg-darker)}.story-fold summary{padding:11px 14px;cursor:pointer;font-weight:800;color:var(--primary-dark)}.story-fold[open]{padding-bottom:12px}.story-fold .story-lead,.story-fold .story-cast{padding:0 14px}.story-comic-episode{padding:8px 0}.comic-episode-heading{text-align:center;margin:5px 0 14px}.comic-episode-heading span{color:var(--primary-dark);font-size:.72rem;font-weight:900;letter-spacing:.13em}.comic-episode-heading h3{margin:5px 0;color:var(--text-bright)}.comic-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:12px 0}.comic-panel{min-width:0;overflow:hidden;border:2px solid #31445b;border-radius:14px;background:#fff;box-shadow:0 8px 18px #14283c20;animation:comic-pop .35s ease both}.comic-panel:nth-child(2){animation-delay:.08s}.comic-panel:nth-child(3){animation-delay:.16s}.comic-art{display:grid;place-items:center;min-height:100px;background:radial-gradient(circle at 50% 30%,#f4fbff,#d9eaf7);font-size:2.6rem}.comic-caption{min-height:105px;padding:11px;background:#18344b;color:#f4fbff;font-size:.87rem;line-height:1.5}.comic-caption small{display:block;margin-bottom:5px;color:#9de7ef;font-size:.68rem;font-weight:900;letter-spacing:.1em}.comic-episode-heading{margin-top:12px}.diary-bubble{padding:12px;border-left:4px solid var(--primary);border-radius:10px;background:#eaf8ff;line-height:1.55}.diary-nav{display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap}.diary-nav button{padding:8px 13px}.diary-nav button:disabled{opacity:.45;cursor:not-allowed}.story-objective{margin-top:14px}.mission-mode.recommended{border-color:#efad25;background:linear-gradient(145deg,#fff9e6,#fff);box-shadow:0 0 0 2px #efad2540}.mission-mode.recommended::after{content:'★ РЕКОМЕНДУЕМ';align-self:flex-end;color:#8a5b00;font-size:.67rem;font-weight:900;letter-spacing:.06em}.mission-mode .mode-howto{color:#496173;background:#f4f8fb;border-radius:8px;padding:7px}.mode-recommendation{grid-column:1/-1;padding:9px 12px;border-radius:10px;background:#fff5d6;color:#76510c}.sim-card-tip{padding:7px 9px;border-radius:8px;background:#f2f8ff;color:#23607b!important;font-weight:700}.field-sim-card{height:100%}.mission-mode-grid{grid-template-columns:repeat(auto-fit,minmax(205px,1fr))}@keyframes comic-pop{from{opacity:.5;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}@media(max-width:700px){.comic-strip{grid-template-columns:1fr}.comic-panel{display:grid;grid-template-columns:76px 1fr;min-height:0}.comic-art{min-height:100%;font-size:2rem}.comic-caption{min-height:0}.story-content{width:min(760px,calc(100% - 24px));max-height:90vh;padding:20px 15px}.diary-nav button{flex:1}}
 
 .sim-trial-book{margin-top:14px;padding:14px;border:1px solid #bdd9e7;border-radius:14px;background:#f6fbff}.sim-trial-book h3{margin:0 0 4px;color:#17445e;font-size:1rem}.sim-trial-book>p{margin:0 0 10px;color:#607488;font-size:.86rem}.sim-trial-row{display:grid;gap:5px;margin-top:8px;padding:10px;border-left:4px solid #e3a532;border-radius:8px;background:#fff;color:#24445a}.sim-trial-row small{color:#607488;line-height:1.45}.sim-trial-row span{line-height:1.5}.sim-trial-row.trial-pass{border-left-color:#31a36b;background:#f1fff6}
+
+/* Reliable, roomy pilot controls on the level-selection screen. */
+.level-topbar{width:min(1260px,100%);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:0 auto 16px;padding:0 4px}.level-story-top{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;margin:0;padding:10px 18px;white-space:nowrap}.level-rpg-strip{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;padding:7px 10px 7px 14px;border:1px solid #c7dce8;border-radius:14px;background:rgba(255,255,255,.92);box-shadow:0 6px 18px #17425d12;color:#203b54}.level-rpg-strip span{white-space:nowrap;font-weight:750}.level-rpg-strip button,#btn-level-hub{min-height:40px;padding:8px 15px;border:1px solid #128caa;border-radius:10px;background:#087f9b;color:#fff;font:inherit;font-weight:800;white-space:nowrap;cursor:pointer}.level-rpg-strip button:hover,#btn-level-hub:hover{background:#06677f}.rpg-hub-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.assignment-advanced{margin:14px 0;padding:12px 14px;border:1px solid var(--border-light);border-radius:12px;background:var(--bg-darker)}.assignment-advanced>summary{cursor:pointer;font-weight:800;color:var(--primary-dark)}.assignment-advanced[open]>summary{margin-bottom:12px}.assignment-advanced-body{display:grid;gap:12px}.assignment-options{margin:0 0 12px;padding:10px 12px;border-radius:10px;background:#f7fbff}.assignment-options summary{cursor:pointer;font-weight:700;color:#31566b}.comic-lore{margin:12px 0;padding:13px 15px;border:1px solid #c6dce7;border-radius:12px;background:#fff;color:#334b5c}.comic-lore summary{cursor:pointer;font-weight:850;color:#174c66}.comic-lore p{margin:9px 0 0;white-space:pre-line;line-height:1.65}.story-content{width:min(860px,calc(100% - 28px));max-height:90vh;padding:clamp(18px,3vw,30px)}
+@media(max-width:680px){.level-topbar{justify-content:center}.level-story-top{width:100%}.level-rpg-strip{width:100%;justify-content:center}.level-rpg-strip span{white-space:normal;text-align:center}.rpg-hub-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 </style>
 
     <!-- Fallback inline styles — гарантируют, что игра выглядит правильно
@@ -1962,7 +1967,7 @@ body.touch-device .controls-hint { display: none; }
             <section class="rpg-hub" aria-label="Штаб пилота">
                 <div class="rpg-hub-head"><div><span class="hub-kicker">ШТАБ ПИЛОТА · ЭКВИЛИБРИУМ</span><h3 id="rpg-rank">🚀 Курсант · уровень 1</h3><p id="rpg-xp">0 / 100 XP до следующего уровня</p></div><span class="hub-emblem">🧬</span></div>
                 <div class="xp-track"><span id="rpg-xp-fill"></span></div>
-                <div class="rpg-hub-grid"><div class="hub-stat"><b id="rpg-missions">0</b><small>миссий пройдено</small></div><div class="hub-stat"><b id="rpg-crystals">0 💎</b><small>кристаллы</small></div><div class="hub-stat"><b id="rpg-points">0</b><small>очков навыков</small></div></div>
+                <div class="rpg-hub-grid"><div class="hub-stat"><b id="rpg-missions">0</b><small>миссий пройдено</small></div><div class="hub-stat"><b id="rpg-crystals">0 💎</b><small>кристаллы</small></div><div class="hub-stat"><b id="rpg-points">0</b><small>очков навыков</small></div><div class="hub-stat"><b id="rpg-badges">0</b><small>достижений</small></div></div>
                 <div class="rpg-tabs" role="tablist" aria-label="Штаб пилота"><button data-rpg-tab="skills" class="active">🧠 Навыки</button><button data-rpg-tab="relics">🔮 Артефакты</button><button data-rpg-tab="quests">📜 Задания</button><button data-rpg-tab="achievements">🎖 Достижения</button></div>
                 <div id="rpg-panel-skills" class="rpg-panel"></div><div id="rpg-panel-relics" class="rpg-panel" hidden></div><div id="rpg-panel-quests" class="rpg-panel" hidden></div><div id="rpg-panel-achievements" class="rpg-panel" hidden></div>
             </section>
@@ -2206,7 +2211,9 @@ body.touch-device .controls-hint { display: none; }
         <div class="tab-content" id="tab-assignments">
             <h3 data-i18n="assignmentsTitle">Назначить уровень ученику</h3>
             <p class="profile-sub" style="margin:0 0 16px" data-i18n="assignmentsNote">Ученик увидит назначение, если его имя или постоянный ID совпадёт с записью в профиле.</p>
-            <div class="class-assignment-panel">
+            <details class="class-assignment-panel assignment-advanced">
+                <summary>⚙ Управление классами и групповая рассылка (необязательно)</summary>
+                <div class="assignment-advanced-body">
                 <h3 data-i18n="classManagementTitle">Классы</h3>
                 <p class="profile-sub" style="margin:0 0 12px" data-i18n="classManagementNote">Создайте класс и укажите учеников: один ученик в строке. Для привязки по ID используйте формат «Имя | playerId».</p>
                 <div class="assignment-form">
@@ -2240,31 +2247,30 @@ body.touch-device .controls-hint { display: none; }
                     </button>
                 </div>
                 <div class="class-list" id="classes-list"></div>
-            </div>
+                </div>
+            </details>
 
-            <div class="assignment-form">
+            <h3 class="quick-assignment-title">Быстро назначить одному ученику</h3>
+            <div class="assignment-form quick-assignment-form">
                 <div class="form-group">
                     <label for="assignment-student-name" data-i18n="assignmentStudentName">Имя ученика</label>
                     <input type="text" id="assignment-student-name" maxlength="80" data-i18n-placeholder="assignmentStudentPlaceholder" placeholder="Например: Айдана" />
                 </div>
                 <div class="form-group">
-                    <label for="assignment-player-id" data-i18n="assignmentPlayerId">ID ученика (необязательно)</label>
-                    <input type="text" id="assignment-player-id" maxlength="100" data-i18n-placeholder="assignmentPlayerIdPlaceholder" placeholder="Вставьте ID из профиля ученика" />
-                </div>
-                <div class="form-group">
-                    <label for="assignment-level" data-i18n="assignmentLevel">Уровень или пользовательский урок</label>
+                    <label for="assignment-level" data-i18n="assignmentLevel">Выбери урок</label>
                     <select id="assignment-level"></select>
                 </div>
-                <div class="form-group">
-                    <label for="assignment-note" data-i18n="assignmentNote">Комментарий (необязательно)</label>
-                    <input type="text" id="assignment-note" maxlength="160" data-i18n-placeholder="assignmentNotePlaceholder" placeholder="Например: пройти до пятницы" />
-                </div>
+                <details class="assignment-options"><summary>Дополнительные параметры (ID и комментарий)</summary>
+                    <div class="form-group"><label for="assignment-player-id" data-i18n="assignmentPlayerId">ID ученика (необязательно)</label><input type="text" id="assignment-player-id" maxlength="100" data-i18n-placeholder="assignmentPlayerIdPlaceholder" placeholder="Вставьте ID из профиля ученика" /></div>
+                    <div class="form-group"><label for="assignment-note" data-i18n="assignmentNote">Комментарий (необязательно)</label><input type="text" id="assignment-note" maxlength="160" data-i18n-placeholder="assignmentNotePlaceholder" placeholder="Например: пройти до пятницы" /></div>
+                </details>
                 <button type="button" class="btn btn-primary" id="btn-add-assignment">
                     <span data-i18n="addAssignment">+ Назначить</span>
                 </button>
             </div>
             <h3 style="margin-top:24px" data-i18n="assignmentsListTitle">Текущие назначения</h3>
             <div class="assignment-list" id="assignments-list"></div>
+            <details class="assignment-advanced"><summary>Импорт, экспорт и результаты (дополнительно)</summary>
             <div class="assignment-transfer">
                 <button type="button" class="btn btn-secondary" id="btn-export-assignments" data-i18n="exportAssignments">⬇ Экспорт назначений</button>
                 <label class="btn btn-secondary" for="assignment-import-file" data-i18n="importAssignments">⬆ Импорт назначений</label>
@@ -2277,6 +2283,7 @@ body.touch-device .controls-hint { display: none; }
                     <button class="btn btn-secondary" id="btn-import-assignment-result" type="button" data-i18n="importAssignmentResult">Добавить результат</button>
                 </div>
             </div>
+            </details>
         </div>
 
         <div class="tab-content" id="tab-manage">
@@ -16719,13 +16726,9 @@ function showLevelSelect() {
     }
 
     const assignmentImportPanel = `
-        <div class="assigned-import-panel">
-            <label for="assignment-share-code">${I18n.t("assignmentShareLabel")}</label>
-            <div class="assigned-import-row">
-                <input id="assignment-share-code" type="text" placeholder="${escapeHtml(I18n.t("assignmentSharePlaceholder"))}" autocomplete="off" />
-                <button class="btn btn-secondary" type="button" id="btn-import-assignment-code">${I18n.t("assignmentShareImport")}</button>
-            </div>
-        </div>
+        <details class="assignment-advanced student-assignment-import"><summary>Есть код назначения от учителя?</summary>
+            <div class="assigned-import-panel"><label for="assignment-share-code">${I18n.t("assignmentShareLabel")}</label><div class="assigned-import-row"><input id="assignment-share-code" type="text" placeholder="${escapeHtml(I18n.t("assignmentSharePlaceholder"))}" autocomplete="off" /><button class="btn btn-secondary" type="button" id="btn-import-assignment-code">${I18n.t("assignmentShareImport")}</button></div></div>
+        </details>
     `;
     const assignedOnlyView = assignmentImportPanel + (studentAssignments.length ? assignedPanel : `
         <div class="assigned-levels-panel assigned-empty-panel">
@@ -17478,7 +17481,7 @@ Object.keys(ASSIGNMENT_RESULT_I18N).forEach(lang => {
         const art=["📡🌌","🛰️📐","🪨🔬","⚖️🛠️","⚡🛡️","🌊🚤","⚙️🔋","✨🧭","🧪📋","🚀🌠"];
         const comicUi={ru:{captions:["СИГНАЛ","ИССЛЕДОВАНИЕ","НОВАЯ ЗАПИСЬ"],journal:"КОМИКС-ЖУРНАЛ · ГЛАВА",mission:"Задача главы",prev:"← Предыдущая",next:"Следующая →",nav:"Навигация по комиксу"},en:{captions:["SIGNAL","INVESTIGATION","NEW LOG"],journal:"COMIC LOG · CHAPTER",mission:"Chapter objective",prev:"← Previous",next:"Next →",nav:"Comic navigation"},kk:{captions:["СИГНАЛ","ЗЕРТТЕУ","ЖАҢА ЖАЗБА"],journal:"КОМИКС-ЖУРНАЛ · ТАРАУ",mission:"Тарау мақсаты",prev:"← Алдыңғы",next:"Келесі →",nav:"Комикс навигациясы"}}[lang]||{captions:["SIGNAL","INVESTIGATION","NEW LOG"],journal:"COMIC LOG · CHAPTER",mission:"Chapter objective",prev:"← Previous",next:"Next →",nav:"Comic navigation"};const captions=comicUi.captions;
         const panels=beats.map((text,i)=>`<article class="comic-panel"><div class="comic-art">${art[(this.viewIndex+i)%art.length]}</div><div class="comic-caption"><small>${captions[i]}</small>${escapeHtml(text||this.text(chapter.mission||chapter.title))}</div></article>`).join("");
-        if(chapters){chapters.innerHTML=`<section class="story-comic-episode"><div class="comic-episode-heading"><span>${comicUi.journal} ${this.viewIndex+1}</span><h3>${escapeHtml(this.text(chapter.title))}</h3></div><div class="comic-strip">${panels}</div><div class="diary-bubble">🎯 <b>${comicUi.mission}:</b> ${escapeHtml(this.text(chapter.mission||chapter.text))}</div><nav class="diary-nav" aria-label="${comicUi.nav}"><button class="btn btn-secondary" type="button" data-story-prev ${this.viewIndex<=0?'disabled':''}>${comicUi.prev}</button><span class="diary-page-indicator">${this.viewIndex+1} / ${maxIndex+1}</span><button class="btn btn-secondary" type="button" data-story-next ${this.viewIndex>=maxIndex?'disabled':''}>${comicUi.next}</button></nav></section>`;
+        if(chapters){chapters.innerHTML=`<section class="story-comic-episode"><div class="comic-episode-heading"><span>${comicUi.journal} ${this.viewIndex+1}</span><h3>${escapeHtml(this.text(chapter.title))}</h3></div><div class="comic-strip">${panels}</div><details class="comic-lore" open><summary>📖 Лор этой главы</summary><p>${escapeHtml(fullText)}</p></details><div class="diary-bubble">🎯 <b>${comicUi.mission}:</b> ${escapeHtml(this.text(chapter.mission||chapter.text))}</div><nav class="diary-nav" aria-label="${comicUi.nav}"><button class="btn btn-secondary" type="button" data-story-prev ${this.viewIndex<=0?'disabled':''}>${comicUi.prev}</button><span class="diary-page-indicator">${this.viewIndex+1} / ${maxIndex+1}</span><button class="btn btn-secondary" type="button" data-story-next ${this.viewIndex>=maxIndex?'disabled':''}>${comicUi.next}</button></nav></section>`;
           chapters.querySelector('[data-story-prev]')?.addEventListener('click',()=>{this.viewIndex=Math.max(0,this.viewIndex-1);this.refresh()});
           chapters.querySelector('[data-story-next]')?.addEventListener('click',()=>{this.viewIndex=Math.min(maxIndex,this.viewIndex+1);this.refresh()});
         }
