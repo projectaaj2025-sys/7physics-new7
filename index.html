@@ -1752,6 +1752,13 @@ body.touch-device .controls-hint { display: none; }
 ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 5px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
 
+
+/* RPG briefing, top-level pilot card, and accessible level tabs */
+.rpg-menu-card{display:flex;align-items:center;gap:16px;width:min(780px,94%);margin:10px auto 20px;padding:15px 18px;border:1px solid #b9d7e7;border-radius:18px;background:linear-gradient(115deg,#effaff,#fff 68%,#f4efff);box-shadow:0 10px 30px #16496518;color:var(--text)}
+.rpg-menu-emblem{display:grid;place-items:center;flex:0 0 52px;height:52px;border-radius:16px;background:#dff4fa;font-size:1.8rem}.rpg-menu-info{display:grid;gap:4px;flex:1;min-width:0}.rpg-menu-info>b{font-size:.97rem}.rpg-menu-info>small{color:var(--text-dim)}.rpg-menu-xp{height:7px;border-radius:9px;background:#dbe7ee;overflow:hidden}.rpg-menu-xp i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#13a9b9,#4168db)}
+.rpg-mode-objective{width:min(390px,90%);padding:11px 14px;border:1px solid #68c7d5;border-radius:14px;background:#e8faff;color:#133b58;box-shadow:0 4px 16px #062b4033}.rpg-mode-objective b,.rpg-mode-objective small{display:block}.rpg-mode-objective>div{height:7px;margin:7px 0;background:#d1e2e8;border-radius:8px;overflow:hidden}.rpg-mode-objective>div span{display:block;width:0;height:100%;background:linear-gradient(90deg,#20b89b,#2585d1);transition:width .25s}.rpg-mode-objective small{color:#446277}.mission-mode{display:flex;flex-direction:column;align-items:flex-start;min-height:235px;gap:4px}.mission-mode .mode-icon{font-size:1.6rem}.mission-mode .mode-tag{padding:3px 8px;border-radius:20px;background:#eaf5fa;color:#23617a;font-weight:800}.mission-mode .mode-goal{margin-top:auto;color:#124d70;font-weight:800}.mission-mode .mode-reward{font-weight:800;color:#785400}.mission-mode.selected{background:linear-gradient(145deg,#f1fbff,#fff);transform:translateY(-2px)}.mission-mode:focus-visible,.level-view-tab:focus-visible{outline:3px solid #ffbd49;outline-offset:2px}
+@media(max-width:600px){.rpg-menu-card{flex-wrap:wrap}.rpg-menu-card .btn{width:100%}.mission-mode{min-height:0}}
+
 </style>
 
     <!-- Fallback inline styles — гарантируют, что игра выглядит правильно
@@ -1828,7 +1835,7 @@ body.touch-device .controls-hint { display: none; }
 .field-simulations{max-width:1300px;width:100%;margin:0 auto 30px;padding:22px;border:1px solid rgba(0,184,212,.35);border-radius:20px;background:linear-gradient(135deg,#effaff,#fff 70%);box-shadow:var(--shadow)}.sim-section-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}.sim-kicker{font-size:.72rem;font-weight:900;letter-spacing:.15em;color:var(--primary-dark)}.sim-section-heading h2{margin:5px 0!important;font-size:clamp(1.25rem,3vw,1.9rem)!important}.sim-section-heading p{margin:0;color:var(--text-dim)}.sim-key-progress{background:#e4f7eb;color:#19733b;border-radius:20px;padding:10px 14px;font-weight:800}.field-sim-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:18px}.field-sim-card{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:178px;padding:17px;text-align:left;border:1px solid #bad6e6;border-radius:16px;background:#fff;color:var(--text);font:inherit;cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s}.field-sim-card:hover:not(:disabled){transform:translateY(-3px);border-color:var(--primary);box-shadow:var(--shadow)}.field-sim-card.is-done{border-color:#4caf70;background:#f1fff5}.field-sim-card.is-locked{opacity:.57;cursor:not-allowed}.field-sim-icon{font-size:1.7rem}.field-sim-card-chapter{font-size:.72rem;color:var(--primary-dark);font-weight:800}.field-sim-card b{font-size:1.08rem}.field-sim-card small{line-height:1.45;color:var(--text-dim)}.field-sim-card em{margin-top:auto;color:var(--primary-dark);font-style:normal;font-size:.85rem;font-weight:800}.sim-story-log{margin-top:15px;padding:12px 15px;border-radius:12px;background:#112844;color:#e9f7ff;line-height:1.5}.field-sim-modal{position:fixed;inset:0;z-index:130;display:none;align-items:center;justify-content:center;background:#061324dd;padding:16px}.field-sim-modal.open{display:flex}.field-sim-panel{position:relative;max-height:92vh;overflow:auto;width:min(760px,100%);padding:clamp(20px,4vw,34px);border-radius:22px;background:#f9fcff;color:#142741;box-shadow:0 24px 80px #0008}.field-sim-panel h2{margin:6px 0;color:#103655}.field-sim-panel>p{line-height:1.6;color:#435871}.field-sim-close{position:absolute;right:15px;top:15px;border:0;border-radius:50%;width:38px;height:38px;background:#e8f2f8;cursor:pointer;font-size:1.1rem}.sim-instrument{padding:17px;border-radius:16px;background:#edf6fb;border:1px solid #c5dce9}.sim-instrument label{display:grid;grid-template-columns:1fr;gap:5px;margin:13px 0;font-weight:700}.sim-instrument input[type=range]{width:100%;accent-color:#008ba3}.sim-instrument select{padding:10px;border:1px solid #a8c5d5;border-radius:8px;font:inherit}.sim-readouts{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}.sim-readouts span{padding:8px 10px;background:white;border-radius:10px}.sim-visual{margin:20px 0 8px}.ramp-track{height:54px;border-bottom:10px solid #708c9c;transform:skewY(-12deg);background:repeating-linear-gradient(90deg,#d5e4ec 0 24px,#c2d7e2 24px 46px);position:relative}.sim-cart{position:absolute;left:60%;bottom:3px;font-size:2rem;transition:transform .2s}.sim-meter{height:12px;background:#d4dfe6;border-radius:20px;overflow:hidden;margin:12px 0}.sim-meter span{display:block;width:0;height:100%;background:#ed9d32;transition:width .2s,background .2s}.sim-meter span.in-safe-zone{background:#35ad68}.thermal-visual{height:100px;margin:12px 0;background:linear-gradient(90deg,#d7f2ff,#fff1ce);border-radius:12px;display:flex;align-items:center;justify-content:center;gap:30px}.reactor-core{font-size:3rem}.heat-waves{font-size:1.5rem;transition:opacity .2s}.water-tank{height:120px;position:relative;margin:14px 0;background:linear-gradient(transparent 35%,#8bd9f0 35%);border:3px solid #8da9b6;border-top:0;border-radius:0 0 14px 14px;overflow:hidden}.waterline{position:absolute;top:35%;width:100%;border-top:2px dashed #258eb0}.pontoon{position:absolute;top:20%;left:44%;font-size:2.2rem;transition:transform .2s}.sim-output{padding:11px 13px;border-radius:10px;background:#fff;color:#1c4057;line-height:1.55}.field-sim-result{min-height:66px;padding:13px 2px;line-height:1.55}.field-sim-actions{display:flex;gap:10px;flex-wrap:wrap}.field-sim-actions button:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:600px){.field-simulations{padding:15px}.field-sim-card{min-height:150px}.field-sim-actions button{flex:1 1 100%}.field-sim-panel{padding:22px 16px}}
 
-.rpg-tabs{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0 10px}.rpg-tabs button{border:1px solid var(--border);background:white;border-radius:10px;padding:9px 11px;cursor:pointer;font-weight:700;color:var(--text)}.rpg-tabs button.active{background:var(--primary);color:white}.rpg-panel[hidden]{display:none}.rpg-panel{display:grid;gap:9px}.rpg-upgrade button{white-space:nowrap}.rpg-quest{padding:13px;border-radius:12px;background:#fff;border:1px solid var(--border);display:grid;gap:7px}.rpg-quest small{color:var(--text-dim)}.rpg-quest button{justify-self:start;border:0;border-radius:8px;padding:7px 12px;background:var(--primary);color:white;cursor:pointer}.rpg-quest button:disabled{opacity:.45;cursor:not-allowed}.quest-meter{height:8px;background:#dce8ef;border-radius:9px;overflow:hidden}.quest-meter span{display:block;height:100%;background:var(--success)}.mission-briefing{position:fixed;inset:0;z-index:125;display:none;align-items:center;justify-content:center;padding:18px;background:#051425dc}.mission-briefing.open{display:flex}.briefing-card{position:relative;width:min(820px,100%);max-height:90vh;overflow:auto;padding:clamp(22px,4vw,36px);border-radius:22px;background:#f7fbff;color:#152942;box-shadow:0 24px 80px #0009}.briefing-close{position:absolute;right:16px;top:15px;width:38px;height:38px;border:0;border-radius:50%;cursor:pointer}.briefing-card h2{margin:8px 0;color:#153c5c}.mission-mode-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:18px 0}.mission-mode{padding:15px;border:1px solid #c5d9e5;border-radius:14px;background:white;text-align:left;cursor:pointer;font:inherit}.mission-mode.selected{border:2px solid var(--primary);box-shadow:var(--glow)}.mission-mode b,.mission-mode small{display:block}.mission-mode small{margin-top:7px;color:var(--text-dim);line-height:1.45}.briefing-footer{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.range-readout{display:block;color:var(--primary-dark);font-weight:800;margin-top:-8px}.ruler-visual,.motion-visual,.scale-visual,.friction-visual,.pressure-visual,.hydraulic-visual,.lever-visual{min-height:74px;margin:16px 0;padding:14px;border-radius:12px;background:linear-gradient(135deg,#e3f5ff,#fff);display:flex;align-items:center;justify-content:center;gap:14px;font-size:1.35rem}.ruler-scale{font-family:monospace;color:#42667c;font-size:.95rem}.measured-piece{height:12px;max-width:80%;background:#00a2b7;border-radius:5px}.motion-visual{justify-content:flex-start}.motion-visual span{height:8px;background:linear-gradient(90deg,#41bde0,#2561b9);border-radius:8px;flex:1}.pressure-visual{flex-direction:column;gap:0}.pressure-ground{width:75%;height:10px;background:#566f7a;border-radius:10px}.hydraulic-visual span{color:#1684a4}.energy-shaft{height:112px;width:90px;margin:14px auto;background:linear-gradient(90deg,#d7e5ec,#f8fcff,#d7e5ec);border-radius:10px;position:relative}.energy-shaft span{position:absolute;left:30px;top:20%;font-size:1.7rem;transition:top .2s}.lever-visual{overflow:hidden}.lever-visual span{display:inline-block;transform-origin:center bottom;transition:transform .2s}
+.rpg-tabs{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0 10px}.rpg-tabs button{border:1px solid var(--border);background:white;border-radius:10px;padding:9px 11px;cursor:pointer;font-weight:700;color:var(--text)}.rpg-tabs button.active{background:var(--primary);color:white}.rpg-panel[hidden]{display:none}.rpg-panel{display:grid;gap:9px}.rpg-upgrade button{white-space:nowrap}.rpg-quest{padding:13px;border-radius:12px;background:#fff;border:1px solid var(--border);display:grid;gap:7px}.rpg-quest small{color:var(--text-dim)}.rpg-quest button{justify-self:start;border:0;border-radius:8px;padding:7px 12px;background:var(--primary);color:white;cursor:pointer}.rpg-quest button:disabled{opacity:.45;cursor:not-allowed}.quest-meter{height:8px;background:#dce8ef;border-radius:9px;overflow:hidden}.quest-meter span{display:block;height:100%;background:var(--success)}.mission-briefing{position:fixed;inset:0;z-index:95;display:none;align-items:center;justify-content:center;padding:18px;background:#051425dc}.mission-briefing.open{display:flex}.briefing-card{position:relative;width:min(820px,100%);max-height:90vh;overflow:auto;padding:clamp(22px,4vw,36px);border-radius:22px;background:#f7fbff;color:#152942;box-shadow:0 24px 80px #0009}.briefing-close{position:absolute;right:16px;top:15px;width:38px;height:38px;border:0;border-radius:50%;cursor:pointer}.briefing-card h2{margin:8px 0;color:#153c5c}.mission-mode-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:18px 0}.mission-mode{padding:15px;border:1px solid #c5d9e5;border-radius:14px;background:white;text-align:left;cursor:pointer;font:inherit}.mission-mode.selected{border:2px solid var(--primary);box-shadow:var(--glow)}.mission-mode b,.mission-mode small{display:block}.mission-mode small{margin-top:7px;color:var(--text-dim);line-height:1.45}.briefing-footer{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.range-readout{display:block;color:var(--primary-dark);font-weight:800;margin-top:-8px}.ruler-visual,.motion-visual,.scale-visual,.friction-visual,.pressure-visual,.hydraulic-visual,.lever-visual{min-height:74px;margin:16px 0;padding:14px;border-radius:12px;background:linear-gradient(135deg,#e3f5ff,#fff);display:flex;align-items:center;justify-content:center;gap:14px;font-size:1.35rem}.ruler-scale{font-family:monospace;color:#42667c;font-size:.95rem}.measured-piece{height:12px;max-width:80%;background:#00a2b7;border-radius:5px}.motion-visual{justify-content:flex-start}.motion-visual span{height:8px;background:linear-gradient(90deg,#41bde0,#2561b9);border-radius:8px;flex:1}.pressure-visual{flex-direction:column;gap:0}.pressure-ground{width:75%;height:10px;background:#566f7a;border-radius:10px}.hydraulic-visual span{color:#1684a4}.energy-shaft{height:112px;width:90px;margin:14px auto;background:linear-gradient(90deg,#d7e5ec,#f8fcff,#d7e5ec);border-radius:10px;position:relative}.energy-shaft span{position:absolute;left:30px;top:20%;font-size:1.7rem;transition:top .2s}.lever-visual{overflow:hidden}.lever-visual span{display:inline-block;transform-origin:center bottom;transition:transform .2s}
 </style>
 </head>
 <body>
@@ -1845,6 +1852,7 @@ body.touch-device .controls-hint { display: none; }
     <div id="menu-screen" class="screen">
         <div class="menu-bg"></div>
         <div class="menu-content">
+            <section class="rpg-menu-card" id="rpg-menu-card" aria-label="Прогресс пилота"></section>
             <h1 class="game-title">
                 <span class="title-line-1" data-i18n="titleLine1">ФИЗИКА-КВЕСТ</span>
                 <span class="title-line-2" data-i18n="titleLine2">ЭНЕРГЕТИЧЕСКИЙ ЩИТ</span>
@@ -1852,6 +1860,7 @@ body.touch-device .controls-hint { display: none; }
             <p class="game-subtitle" data-i18n="subtitle">Защити город астероидов силой знаний физики</p>
 
             <div class="menu-buttons">
+                <button class="btn btn-secondary" id="btn-story-menu" type="button">📜 <span data-i18n="storyButton">Лор и сюжет</span></button>
                 <button class="btn btn-primary" id="btn-start">
                     <span class="btn-icon">▶</span>
                     <span data-i18n="startGame">Начать игру</span>
@@ -1895,6 +1904,10 @@ body.touch-device .controls-hint { display: none; }
 
     <!-- Экран выбора уровня -->
     <div id="level-screen" class="screen">
+        <div class="level-topbar">
+            <button class="btn btn-secondary level-story-top" id="btn-story-open" type="button">📜 <span data-i18n="storyButton">Лор и сюжет</span></button>
+            <div class="level-rpg-strip"><span id="level-rpg-rank">🚀 Курсант · уровень 1</span><span id="level-rpg-xp">0 / 100 XP</span><button type="button" id="btn-level-hub">🧬 Штаб</button></div>
+        </div>
         <div class="level-screen-header">
             <h2 data-i18n="selectLevel">Выбери уровень</h2>
             <div class="level-view-tabs" role="tablist">
@@ -1908,17 +1921,12 @@ body.touch-device .controls-hint { display: none; }
           <div class="sim-section-heading"><div><span class="sim-kicker">СЮЖЕТНЫЕ ПОЛЕВЫЕ ИСПЫТАНИЯ</span><h2 id="field-sim-title">🧪 Симуляторы экспедиции</h2><p>10 бонусных миссий по ключевым темам §3–§35: меняй параметры, проводи физический опыт и продвигай сюжет экспедиции.</p></div><div class="sim-key-progress" id="sim-key-progress">🔑 Фрагменты ключа: 0 / 10</div></div>
           <div class="field-sim-grid" id="field-sim-grid"></div><div class="sim-story-log" id="sim-story-log" aria-live="polite">📡 Квант: «Станция потеряла управление. Пройди испытания, чтобы восстановить щит».</div>
         </section>
-        <div class="level-screen-actions">
-            <button class="btn btn-secondary" id="btn-story-open" type="button">
-                📖 <span data-i18n="storyButton">Лор и сюжет</span>
-            </button>
-        </div>
         <button class="btn btn-back" id="btn-back-to-menu">
             <span data-i18n="back">← Назад</span>
         </button>
     </div>
 
-    <div class="mission-briefing" id="mission-briefing" aria-hidden="true"><div class="briefing-card" role="dialog" aria-modal="true" aria-labelledby="briefing-title"><button class="briefing-close" id="briefing-close" aria-label="Закрыть">✕</button><span class="hub-kicker">БРИФИНГ МИССИИ · РЕЖИМЫ ВЫЛЕТА</span><h2 id="briefing-title">Выбери тактику</h2><p id="briefing-level"></p><div class="mission-mode-grid" id="mission-mode-grid"></div><div class="briefing-footer"><span id="briefing-reward">Награда: XP + кристаллы за победу</span><button class="btn btn-primary" id="mission-launch">🚀 Начать миссию</button></div></div></div>
+    <div class="mission-briefing" id="mission-briefing" aria-hidden="true"><div class="briefing-card" role="dialog" aria-modal="true" aria-labelledby="briefing-title"><button class="briefing-close" id="briefing-close" type="button" aria-label="Закрыть">✕</button><span class="hub-kicker">БРИФИНГ МИССИИ · ВЫБОР РЕЖИМА</span><h2 id="briefing-title">Выбери дизайн миссии</h2><p id="briefing-level"></p><div class="briefing-summary" id="briefing-summary"></div><div class="mission-mode-grid" id="mission-mode-grid" role="listbox" aria-label="Тип миссии"></div><div class="briefing-footer"><button class="btn btn-secondary" id="mission-theory" type="button">📖 Теория уровня</button><button class="btn btn-secondary" id="mission-cancel" type="button">← Назад</button><button class="btn btn-primary" id="mission-launch" type="button">🚀 Начать миссию</button></div></div></div>
 
     <!-- Лор и сюжет открываются из экрана «Начать игру» -->
     <div id="story-modal" class="modal">
@@ -2003,11 +2011,10 @@ body.touch-device .controls-hint { display: none; }
             <div class="hud-center">
                 <div class="city-health">
                     <span class="health-label" data-i18n="cityHealth">Город</span>
-                    <div class="health-bar">
-                        <div class="health-fill" id="city-health-fill"></div>
-                    </div>
+                    <div class="health-bar"><div class="health-fill" id="city-health-fill"></div></div>
                     <span class="health-value" id="city-health-value">100%</span>
                 </div>
+                <div class="rpg-mode-objective" id="rpg-mode-objective" hidden><b id="rpg-mode-objective-title"></b><div><span id="rpg-mode-objective-fill"></span></div><small id="rpg-mode-objective-text"></small></div>
             </div>
             <div class="hud-right">
                 <div class="hud-item" id="hud-shield">
@@ -14524,6 +14531,14 @@ function rocketSVG(st) {
     </svg>`;
 }
 
+function updateRpgModeHud(game) {
+    const box=document.getElementById("rpg-mode-objective"); if(!box)return;
+    const mode=game?.rpgMissionMode, stats=game?.rpgModeStats||{};
+    const data={harvest:["🌿 Энергосад · сбор ядер",stats.orbs||0,12,`${stats.orbs||0} / 12 энергоядер`],boss:["👁️ Ядро Астериона",Math.max(0,(stats.bossMaxHp||100)-(stats.bossHp??100)),stats.bossMaxHp||100,`Ядро: ${Math.max(0,stats.bossHp??100)} / ${stats.bossMaxHp||100} HP`],blitz:["⚡ Скоростной протокол",stats.fastAnswers||0,8,`${stats.fastAnswers||0} / 8 быстрых ответов`],survival:["☄️ Осада волнами",stats.wave||0,3,`Волна ${Math.min(3,stats.wave||0)} / 3`],defense:["🛡️ Оборона купола",game.cityHealth||0,game.cityMaxHealth||100,`Целостность города: ${Math.max(0,Math.round(game.cityHealth||0))}%`]};
+    if(!data[mode]){box.hidden=true;return;}const [title,value,max,text]=data[mode];box.hidden=false;
+    const t=document.getElementById("rpg-mode-objective-title"),f=document.getElementById("rpg-mode-objective-fill"),d=document.getElementById("rpg-mode-objective-text");if(t)t.textContent=title;if(d)d.textContent=text;if(f)f.style.width=`${Math.max(0,Math.min(100,(value/Math.max(1,max))*100))}%`;
+}
+
 const Game = {
     canvas: null,
     ctx: null,
@@ -14740,6 +14755,7 @@ const Game = {
         this.shield = Math.min(this.levelConfig.shieldCapacity, 30 + (rpgPerks.shield||0));
         this.score = (rpgPerks.focus||0)*50;
         this.rpgRewardedThisRun = false;
+        this.rpgModeStats={orbs:0,fastAnswers:0,bossHp:120,bossMaxHp:120,wave:0};
         this.tasksSolved = 0;
         this.tasksAttempted = 0;
         this.asteroidsDeflected = 0;
@@ -14802,11 +14818,13 @@ const Game = {
         // Запуск таймеров
         // Спавн: ~1 астероид в 4.2-5.6 с; каждые 3 астероида — вопрос (~1 вопрос в 15 секунд)
         const levelNum = typeof this.currentLevel === "number" ? this.currentLevel : 25;
-        const spawnInterval = Math.max(4200, Math.min(5600, 5600 - levelNum * 28));
+        const modeInterval=this.rpgMissionMode==="harvest"?1.35:this.rpgMissionMode==="blitz"?0.72:this.rpgMissionMode==="survival"?0.9:1;
+        const spawnInterval = Math.max(2600, Math.round(Math.max(4200, Math.min(5600, 5600 - levelNum * 28))*modeInterval));
         this.asteroidTimer = setInterval(() => this.spawnAsteroid(), spawnInterval);
         this.energyTimer = setInterval(() => {
             if (this.energyOrbs.length < 7) this.spawnEnergyOrb(); // больше энергии — больше динамики
-        }, this.levelConfig.energySpawnRate);
+        }, Math.round(this.levelConfig.energySpawnRate*(this.rpgMissionMode==="harvest"?0.55:1)));
+        updateRpgModeHud(this);
         // В начале уровня сразу небольшой поток астероидов (3 штуки), разнесённых
         // по высоте — прилетают один за другим, игра динамична с первых секунд.
         // Порог удаления «улетевших вверх» — y < -250, поэтому старт не выше -220.
@@ -15034,8 +15052,9 @@ const Game = {
         // Скорость растёт по ходу уровня: в начале медленнее (0.7x), к 3-й минуте быстрее базовой (1.35x)
         const prog = Math.min(1, this.timeElapsed / 180000);
         const speedMul = 0.7 + 0.65 * prog;
-        const modeFactor = this.rpgMissionMode === "challenge" ? 1.22 : this.rpgMissionMode === "research" ? 0.9 : 1;
-        const speed = this.levelConfig.asteroidSpeed * speedMul * modeFactor * (0.95 + Math.random() * 0.1);
+        const modeFactor = this.rpgMissionMode === "blitz" ? 1.18 : this.rpgMissionMode === "harvest" ? 0.8 : this.rpgMissionMode === "boss" ? 1.08 : 1;
+        const waveFactor=this.rpgMissionMode==="survival"?1+Math.floor((this.asteroidsResolved||0)/6)*0.07:1;
+        const speed = this.levelConfig.asteroidSpeed * speedMul * modeFactor * waveFactor * (0.95 + Math.random() * 0.1);
         this.asteroids.push({
             x, y: -40,
             vx: (Math.random() - 0.5) * 1.1,
@@ -15078,8 +15097,9 @@ const Game = {
         if (this.autoCloseTimeout) { clearTimeout(this.autoCloseTimeout); this.autoCloseTimeout = null; }
         this.isTaskActive = true;
         this.currentTask = task;
+        this.currentTaskOpenedAt=Date.now();
         this.taskAttempts = 0;
-        this.taskHintsLeft = 3 + (getRpgPerks().scholar||0) + (this.rpgMissionMode === "research" ? 1 : 0);
+        this.taskHintsLeft = 3 + (getRpgPerks().scholar||0);
 
         const modal = document.getElementById("task-modal");
         document.getElementById("task-title").textContent = I18n.t("task") + " #" + (this.completedTaskIds.length + 1);
@@ -15328,6 +15348,8 @@ const Game = {
         this.updateTaskStats();
 
         const isCorrect = this.evaluateAnswer(this.currentTask);
+        if(this.rpgMissionMode==="boss"){this.rpgModeStats.bossHp=isCorrect?Math.max(0,this.rpgModeStats.bossHp-30):Math.min(this.rpgModeStats.bossMaxHp,this.rpgModeStats.bossHp+10);if(this.rpgModeStats.bossHp===0&&!this.rpgModeStats.bossDefeated){this.rpgModeStats.bossDefeated=true;showNotification("👁️ Ядро Астериона уничтожено!", "success");}updateRpgModeHud(this)}
+        if(this.rpgMissionMode==="blitz"&&isCorrect&&Date.now()-(this.currentTaskOpenedAt||Date.now())<=15000){this.rpgModeStats.fastAnswers=(this.rpgModeStats.fastAnswers||0)+1;updateRpgModeHud(this)}
         const feedback = document.getElementById("task-feedback");
 
         if (isCorrect) {
@@ -15706,7 +15728,7 @@ const Game = {
                     // и здоровье города «просто так» падало между вопросами.
                     const hitCity = Math.abs(a.x - cityCenterX) <= cityRadius;
                     if (hitCity) {
-                        const damage = this.rpgMissionMode === "challenge" ? 16 : this.rpgMissionMode === "research" ? 9 : 12;
+                        const damage = this.rpgMissionMode === "blitz" ? 15 : this.rpgMissionMode === "harvest" ? 9 : this.rpgMissionMode === "survival" ? 14 : 12;
                         this.cityHealth = Math.max(0, this.cityHealth - damage);
                         this.score = Math.max(0, this.score - 25);
                         this.shakeAmount = 14;
@@ -15793,6 +15815,7 @@ const Game = {
     // Астероид сбит щитом или упал на город: каждые ASTEROIDS_PER_TASK — вопрос по физике
     registerAsteroidResolved() {
         this.asteroidsResolved = (this.asteroidsResolved || 0) + 1;
+        if(this.rpgMissionMode==="survival"){this.rpgModeStats.wave=Math.min(3,Math.floor(this.asteroidsResolved/6));updateRpgModeHud(this)}
         if (this.asteroidsResolved % ASTEROIDS_PER_TASK === 0) {
             const sid = this.sessionId;
             setTimeout(() => {
@@ -15811,8 +15834,9 @@ const Game = {
 
             // Сбор
             const dist = Math.hypot(o.x - this.player.x, o.y - this.player.y);
-            if (dist < o.radius + this.player.size) {
+            if (dist < o.radius + this.player.size + (this.rpgMissionMode==="harvest"?65:0)) {
                 this.energyOrbs.splice(i, 1);
+                if(this.rpgMissionMode==="harvest"){this.rpgModeStats.orbs=(this.rpgModeStats.orbs||0)+1;updateRpgModeHud(this)}
                 // Бонус-баллы по типу энергии
                 const bonusMap = {
                     kinetic:    { points: 10, energy: 20, labelKey: "orbKinetic",    color: "#00d9ff" },
@@ -15820,9 +15844,9 @@ const Game = {
                     thermal:    { points: 20, energy: 10, labelKey: "orbThermal",    color: "#ffaa00" }
                 };
                 const bonus = bonusMap[o.type];
-                const salvageFactor = this.rpgMissionMode === "salvage" ? 2 : 1;
-                this.score += bonus.points * salvageFactor;
-                this.shield = Math.min(this.shield + bonus.energy + (this.rpgMissionMode === "salvage" ? 5 : 0), this.levelConfig.shieldCapacity);
+                const salvageFactor = this.rpgMissionMode === "harvest" ? 1.5 : 1;
+                this.score += Math.round(bonus.points * salvageFactor);
+                this.shield = Math.min(this.shield + bonus.energy + (this.rpgMissionMode === "harvest" ? 5 : 0), this.levelConfig.shieldCapacity);
                 this.createExplosion(o.x, o.y, bonus.color);
                 showNotification(I18n.t(bonus.labelKey, bonus.points), "success");
             }
@@ -15879,6 +15903,7 @@ const Game = {
             document.getElementById("city-health-fill").style.background = "linear-gradient(90deg, var(--success), var(--accent))";
         }
         document.getElementById("time-value").textContent = formatTimeShort(this.timeElapsed);
+        updateRpgModeHud(this);
     },
 
     // ============ РЕНДЕР ============
@@ -16405,6 +16430,7 @@ function initApp() {
     Teacher.init();
     setupMainMenu();
     setupModals();
+    renderRpgMenuCard();
     if (window.__PhysicsQuestStory?.init) window.__PhysicsQuestStory.init();
     showScreen("menu-screen");
 }
@@ -16453,6 +16479,7 @@ function setupMainMenu() {
     document.getElementById("btn-profile").addEventListener("click", () => {
         showProfile();
     });
+    document.getElementById("btn-level-hub")?.addEventListener("click", () => showProfile());
     document.getElementById("btn-profile-back").addEventListener("click", () => {
         showScreen("menu-screen");
     });
@@ -16567,6 +16594,7 @@ function refreshAfterLangChange() {
 
 // ============ ВЫБОР УРОВНЯ ============
 function showLevelSelect() {
+    renderRpgMenuCard();
     const grid = document.getElementById("levels-grid");
     const progress = Storage.getProgress();
 
@@ -16592,6 +16620,11 @@ function showLevelSelect() {
     const assignedCountBadge = document.getElementById("assigned-count-badge");
     levelsViewButton?.classList.toggle("active", levelSelectView === "levels");
     assignedViewButton?.classList.toggle("active", levelSelectView === "assigned");
+    levelsViewButton?.setAttribute("aria-selected", String(levelSelectView === "levels"));
+    assignedViewButton?.setAttribute("aria-selected", String(levelSelectView === "assigned"));
+    [levelsViewButton,assignedViewButton].forEach((tab,i)=>{if(tab){tab.setAttribute("aria-controls","levels-grid");tab.tabIndex=(i===0)===(levelSelectView==="levels")?0:-1;}});
+    const fieldMissions=document.querySelector(".field-simulations");
+    if(fieldMissions)fieldMissions.hidden=levelSelectView!=="levels";
     if (assignedCountBadge) assignedCountBadge.textContent = studentAssignments.length ? String(studentAssignments.length) : "";
     const sectionTitles = {
         bonus:  { ru: "⚠ БОНУСНЫЙ УРОВЕНЬ — ТЕХНИКА БЕЗОПАСНОСТИ",
@@ -16980,8 +17013,14 @@ const RpgProgression={
  award(xp,crystals=0,reason="") {const st=readRpgState(),oldLevel=rpgLevelInfo(st.xp).level;const bonus=st.equipped==="focus-crystal"?1.15:1;const gained=Math.max(0,Math.round(xp*bonus));st.xp+=gained;st.crystals+=Math.max(0,crystals);st.wins+=reason==="victory"?1:0;const info=rpgLevelInfo(st.xp);for(let n=oldLevel;n<info.level;n++){st.skillPoints++;st.crystals+=5;}saveRpgState(st);if(typeof renderRpgHub==="function")renderRpgHub();return {xp:gained,level:info.level,leveled:info.level>oldLevel};},
  get(){return readRpgState()},
 };
+function renderRpgMenuCard(){
+    const st=readRpgState(),info=rpgLevelInfo(st.xp),rank=info.level<3?'Курсант':info.level<6?'Исследователь':info.level<12?'Навигатор':'Защитник города';
+    const card=document.getElementById('rpg-menu-card');if(card){card.innerHTML=`<div class="rpg-menu-emblem">🧬</div><div class="rpg-menu-info"><span class="hub-kicker">ПИЛОТ ЭКВИЛИБРИУМА</span><b>${escapeHtml(Storage.getSettings().playerName||I18n.t('anonymous'))} · ${rank} LVL ${info.level}</b><div class="rpg-menu-xp"><i style="width:${Math.min(100,info.within/info.need*100)}%"></i></div><small>${info.within}/${info.need} XP · 💎 ${st.crystals} · 🧠 ${st.skillPoints} SP</small></div><button class="btn btn-secondary" id="btn-menu-hub" type="button">🧬 Открыть штаб</button>`;document.getElementById('btn-menu-hub')?.addEventListener('click',()=>showProfile());}
+    const rankNode=document.getElementById('level-rpg-rank'),xpNode=document.getElementById('level-rpg-xp');if(rankNode)rankNode.textContent=`🚀 ${rank} · уровень ${info.level}`;if(xpNode)xpNode.textContent=`${info.within} / ${info.need} XP`;
+}
 function renderRpgHub(tab){
     const st=readRpgState(),info=rpgLevelInfo(st.xp),progress=Storage.getProgress(),done=Object.values(progress.completedLevels||{});
+    renderRpgMenuCard();
     const rank=info.level<3?'Курсант':info.level<6?'Исследователь':info.level<12?'Навигатор':info.level<20?'Защитник города':'Легенда экспедиции';
     const $=id=>document.getElementById(id);$('rpg-rank').textContent=`🚀 ${rank} · уровень ${info.level}`;$('rpg-xp').textContent=`${info.within} / ${info.need} XP до следующего уровня`;$('rpg-xp-fill').style.width=`${Math.min(100,info.within/info.need*100)}%`;$('rpg-missions').textContent=st.wins+st.simWins;$('rpg-crystals').textContent=`${st.crystals} 💎`;$('rpg-points').textContent=st.skillPoints;
     const skills=$('rpg-panel-skills');skills.innerHTML=RPG_SKILLS.map(x=>{const level=Math.min(x.max,Number(st.skills[x.id])||0);return `<div class="rpg-upgrade"><span><b>${x.name} · ${level}/${x.max}</b><br><small>${x.desc}</small></span><button data-skill="${x.id}" ${level>=x.max||st.skillPoints<1?'disabled':''}>Прокачать · 1 SP</button></div>`}).join('');skills.querySelectorAll('[data-skill]').forEach(b=>b.onclick=()=>{const a=readRpgState(),k=b.dataset.skill;if(a.skillPoints<1)return;a.skills[k]=Math.min(RPG_SKILLS.find(x=>x.id===k).max,(Number(a.skills[k])||0)+1);a.skillPoints--;saveRpgState(a);renderRpgHub('skills')});
@@ -16990,8 +17029,8 @@ function renderRpgHub(tab){
     $('rpg-panel-quests').innerHTML=milestones.map(q=>{const claimed=!!st.claims[q.id],ready=q.value>=q.target;return `<div class="rpg-quest"><b>📜 ${q.title}</b><small>${q.desc}</small><div class="quest-meter"><span style="width:${Math.min(100,q.value/q.target*100)}%"></span></div><small>${Math.min(q.value,q.target)} / ${q.target} · награда ${q.reward}</small><button data-quest="${q.id}" ${!ready||claimed?'disabled':''}>${claimed?'Получено':ready?'Забрать награду':'В процессе'}</button></div>`}).join('');$('rpg-panel-quests').querySelectorAll('[data-quest]').forEach(b=>b.onclick=()=>{const a=readRpgState(),q=milestones.find(x=>x.id===b.dataset.quest);if(a.claims[q.id]||a[q.id==='sim'?'simWins':q.id==='answers'?'answered':'stars3']<q.target)return;a.claims[q.id]=true;a.crystals+=q.id==='answers'?10:q.id==='sim'?8:5;saveRpgState(a);renderRpgHub('quests')});
     const allSims=JSON.parse(localStorage.getItem('pq7_field_trials_v1')||'{}');const achievements=[['🚀 Первый вылет',st.wins>=1],['🧪 Полевой исследователь',st.simWins>=2],['🔑 Ключ восстановлен',Object.keys(allSims).filter(k=>['p3_units','p8_motion','p13_density','p19_friction','p22_pressure','p25_hydraulic','p28_archimedes','p30_power','p32_energy','p35_lever'].includes(k)).length>=10],['⭐ Безупречная миссия',st.stars3>=1],['💎 Коллекционер',st.owned.length>=2],['🏅 Легенда штаба',info.level>=10]];
     $('rpg-panel-achievements').innerHTML=achievements.map(([n,on])=>`<span class="rpg-badge ${on?'':'locked'}">${n}</span>`).join('');$('rpg-badges').textContent=achievements.filter(a=>a[1]).length;
-    document.querySelectorAll('[data-rpg-tab]').forEach(b=>{b.classList.toggle('active',b.dataset.rpgTab===(tab||'skills'));b.onclick=()=>{document.querySelectorAll('[data-rpg-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.rpg-panel').forEach(x=>x.hidden=x.id!==`rpg-panel-${b.dataset.rpgTab}`)}});
-    document.querySelectorAll('.rpg-panel').forEach(x=>x.hidden=x.id!==`rpg-panel-${tab||'skills'}`);
+    document.querySelectorAll('[data-rpg-tab]').forEach(b=>{const active=b.dataset.rpgTab===(tab||'skills');b.type='button';b.classList.toggle('active',active);b.setAttribute('aria-selected',String(active));b.setAttribute('aria-controls',`rpg-panel-${b.dataset.rpgTab}`);b.onclick=()=>{document.querySelectorAll('[data-rpg-tab]').forEach(x=>{const on=x===b;x.classList.toggle('active',on);x.setAttribute('aria-selected',String(on))});document.querySelectorAll('.rpg-panel').forEach(x=>x.hidden=x.id!==`rpg-panel-${b.dataset.rpgTab}`)}});
+    document.querySelectorAll('.rpg-panel').forEach(x=>{x.setAttribute('role','tabpanel');x.hidden=x.id!==`rpg-panel-${tab||'skills'}`});
 }
 function getRpgPerks(){try{const old=JSON.parse(localStorage.getItem('pq7_rpg_perks')||'{}'),st=readRpgState(),skill=st.skills||{};return {shield:(Number(old.shield)||0)*10+(Number(skill.shield)||0)*10+(st.equipped==='shield-core'?15:0),repair:(Number(old.repair)||0)+(Number(skill.repair)||0),focus:(Number(old.focus)||0)+(Number(skill.focus)||0),scholar:(Number(skill.scholar)||0)+(st.equipped==='chrono'?1:0)}}catch(_){return {shield:0,repair:0,focus:0,scholar:0}}}
 
@@ -17381,12 +17420,12 @@ Object.keys(ASSIGNMENT_RESULT_I18N).forEach(lang => {
         } catch (_) { return 0; }
       },
       init() {
-        const openButton = document.getElementById("btn-story-open");
+        const openButtons = ["btn-story-open", "btn-story-menu"].map(id => document.getElementById(id)).filter(Boolean);
         const closeButton = document.getElementById("btn-story-close");
         const modal = document.getElementById("story-modal");
-        if (!openButton || !closeButton || !modal) return;
+        if (!openButtons.length || !closeButton || !modal) return;
         if (this.initialized) { this.refresh(); return; }
-        openButton.addEventListener("click", () => this.open());
+        openButtons.forEach(button => button.addEventListener("click", () => this.open()));
         closeButton.addEventListener("click", () => this.close());
         modal.addEventListener("click", event => { if (event.target === modal) this.close(); });
         document.addEventListener("keydown", event => {
@@ -17880,18 +17919,21 @@ Object.keys(ASSIGNMENT_RESULT_I18N).forEach(lang => {
 <script>
 (()=>{
  const MODES=[
-  {id:'defense',icon:'🛡️',name:'Защита купола',desc:'Стандартная скорость, обычный урон и сбалансированная награда.',reward:'обычная награда'},
-  {id:'research',icon:'🔬',name:'Научная разведка',desc:'Астероиды медленнее на 10%, +1 подсказка к вопросам.',reward:'+10% XP'},
-  {id:'salvage',icon:'💎',name:'Сбор энергии',desc:'Энергоядра дают больше очков и энергии щита.',reward:'+2 кристалла за победу'},
-  {id:'challenge',icon:'☄️',name:'Астероидный шторм',desc:'Астероиды быстрее на 22%, урон выше. Режим для опытных пилотов.',reward:'+40% XP и +2 кристалла'}
+  {id:'defense',icon:'🛡️',name:'Оборона купола',tag:'Классический бой',desc:'Ровный темп, обычные астероиды и полный контроль.',objective:'Сохранить город выше 80%',xp:1,crystals:6},
+  {id:'harvest',icon:'🌿',name:'Энергосад',tag:'Сбор и ресурсы',desc:'Астероиды медленнее, энергоядра появляются чаще и притягиваются к ракете.',objective:'Собрать 12 энергоядер',xp:1.15,crystals:10},
+  {id:'boss',icon:'👁️',name:'Сердце Астериона',tag:'Битва с боссом',desc:'Каждый верный ответ бьёт по ядру роя, ошибка восстанавливает его HP.',objective:'Уничтожить ядро Астериона',xp:1.3,crystals:15},
+  {id:'blitz',icon:'⚡',name:'Скоростной протокол',tag:'Блиц',desc:'Астероиды и вопросы идут чаще. Быстрые ответы приносят повышенную награду.',objective:'Дать 8 быстрых ответов',xp:1.5,crystals:12},
+  {id:'survival',icon:'☄️',name:'Осада волнами',tag:'Выживание',desc:'Каждые шесть астероидов начинается новая, более быстрая волна.',objective:'Пережить 3 волны',xp:1.35,crystals:14}
  ];let pending=null,selected=localStorage.getItem('pq7_mission_mode')||'defense';
- window.openMissionBriefing=function(level){pending=level;document.getElementById('briefing-level').textContent=`Миссия: ${levelTitleText(level)}. Выбери тактику и узнай условия вылета.`;const grid=document.getElementById('mission-mode-grid');grid.innerHTML=MODES.map(m=>`<button type="button" class="mission-mode ${m.id===selected?'selected':''}" data-mode="${m.id}"><b>${m.icon} ${m.name}</b><small>${m.desc}</small><small><strong>Награда:</strong> ${m.reward}</small></button>`).join('');grid.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{selected=b.dataset.mode;localStorage.setItem('pq7_mission_mode',selected);grid.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('selected',x===b))});const dlg=document.getElementById('mission-briefing');dlg.classList.add('open');dlg.setAttribute('aria-hidden','false')};
- function close(){const d=document.getElementById('mission-briefing');d.classList.remove('open');d.setAttribute('aria-hidden','true')}
- document.getElementById('mission-launch').onclick=()=>{if(pending===null)return;Game.rpgMissionMode=selected;const id=pending;pending=null;close();Game.startLevel(id)};
+ function updateModeDetails(){const m=MODES.find(x=>x.id===selected)||MODES[0];const summary=document.getElementById('briefing-summary');if(summary)summary.innerHTML=`<span>🎯 Цель: <b>${m.objective}</b></span><span>⭐ Награда: <b>×${m.xp} XP · до +${m.crystals} 💎</b></span>`;}
+ window.openMissionBriefing=function(level){pending=level;const cfg=getLevelConfig(level);document.getElementById('briefing-level').textContent=`${levelTitleText(level)} · ${cfg?.tasksTotal||10} заданий. Выбери режим миссии.`;const grid=document.getElementById('mission-mode-grid');grid.innerHTML=MODES.map(m=>`<button type="button" role="option" aria-selected="${m.id===selected}" class="mission-mode ${m.id===selected?'selected':''}" data-mode="${m.id}"><span class="mode-icon">${m.icon}</span><b>${m.name}</b><small class="mode-tag">${m.tag}</small><small>${m.desc}</small><small class="mode-goal">🎯 ${m.objective}</small><small class="mode-reward">×${m.xp} XP · 💎 ${m.crystals}</small></button>`).join('');grid.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{selected=b.dataset.mode;localStorage.setItem('pq7_mission_mode',selected);grid.querySelectorAll('[data-mode]').forEach(x=>{const on=x===b;x.classList.toggle('selected',on);x.setAttribute('aria-selected',String(on))});updateModeDetails()});updateModeDetails();const dlg=document.getElementById('mission-briefing');dlg.classList.add('open');dlg.setAttribute('aria-hidden','false')};
+ function close(){const d=document.getElementById('mission-briefing');d.classList.remove('open');d.setAttribute('aria-hidden','true');pending=null}
+ document.getElementById('mission-launch').onclick=()=>{if(pending===null)return;Game.rpgMissionMode=selected;const id=pending;close();Game.startLevel(id)};
+ document.getElementById('mission-theory').onclick=()=>{if(pending!==null&&typeof openTheory==='function')openTheory(pending)};
+ document.getElementById('mission-cancel').onclick=close;
  document.getElementById('briefing-close').onclick=close;document.getElementById('mission-briefing').addEventListener('click',e=>{if(e.target.id==='mission-briefing')close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
- const oldEnd=Game.endLevel.bind(Game);Game.endLevel=function(victory){if(this.running&&!this.rpgRewardedThisRun){this.rpgRewardedThisRun=true;const accuracy=this.tasksAttempted?Math.round(this.tasksSolved/this.tasksAttempted*100):0;const st=readRpgState();st.answered+=this.tasksSolved;if(victory){st.stars3+=accuracy>=90?1:0;saveRpgState(st)}let xp=victory?45+this.tasksSolved*8+Math.round(accuracy*.25):10+this.tasksSolved*3;let crystals=victory?2+Math.floor(accuracy/50):0;if(this.rpgMissionMode==='research')xp=Math.round(xp*1.1);if(this.rpgMissionMode==='challenge'){xp=Math.round(xp*1.4);crystals+=2}if(this.rpgMissionMode==='salvage'&&victory)crystals+=2;const reward=RpgProgression.award(xp,crystals,victory?'victory':'attempt');if(reward.leveled)showNotification(`🎉 Новое звание! Уровень ${reward.level} · +1 очко навыка`, 'success');else showNotification(`⭐ +${reward.xp} XP${crystals?` · +${crystals} 💎`:''}`,victory?'success':'info');}return oldEnd(victory)};
+ const oldEnd=Game.endLevel.bind(Game);Game.endLevel=function(victory){if(this.running&&!this.rpgRewardedThisRun){this.rpgRewardedThisRun=true;const accuracy=this.tasksAttempted?Math.round(this.tasksSolved/this.tasksAttempted*100):0;const st=readRpgState();st.answered+=this.tasksSolved;if(victory){st.stars3+=accuracy>=90?1:0;saveRpgState(st)}let xp=victory?45+this.tasksSolved*8+Math.round(accuracy*.25):10+this.tasksSolved*3;let crystals=victory?2+Math.floor(accuracy/50):0;const mode=this.rpgMissionMode||'defense',stats=this.rpgModeStats||{};const cfg=MODES.find(m=>m.id===mode)||MODES[0];if(victory){xp=Math.round(xp*cfg.xp);crystals+=cfg.crystals;if(mode==='harvest'&&(stats.orbs||0)<12)crystals=Math.max(0,crystals-5);if(mode==='boss'&&(stats.bossHp||1)>0)crystals=Math.max(0,crystals-8);if(mode==='blitz'&&(stats.fastAnswers||0)<8)crystals=Math.max(0,crystals-6);if(mode==='survival'&&(stats.wave||0)<3)crystals=Math.max(0,crystals-7)}const reward=RpgProgression.award(xp,crystals,victory?'victory':'attempt');if(reward.leveled)showNotification(`🎉 Новое звание! Уровень ${reward.level} · +1 очко навыка`, 'success');else showNotification(`⭐ +${reward.xp} XP${crystals?` · +${crystals} 💎`:''}`,victory?'success':'info');}return oldEnd(victory)};
 })();
 </script>
-
 </body>
 </html>
