@@ -796,6 +796,7 @@ html, body {
     gap: 10px;
     flex-wrap: wrap;
 }
+.profile-notes-language { font-size: 12px; color: var(--text-muted, #8aa0b8); align-self: center; }
 
 
 /* ============ ИГРОВОЙ ЭКРАН ============ */
@@ -1995,11 +1996,15 @@ body.touch-device .controls-hint { display: none; }
             </div>
             <div class="profile-field">
                 <label data-i18n="profileConspektTitle">📘 Полный конспект</label>
-                <p class="profile-sub" style="margin:0 0 10px" data-i18n="profileConspektNote">Общий конспект всех 39 параграфов — скачай в PDF</p>
+                <p class="profile-sub" style="margin:0 0 10px" data-i18n="profileConspektNote">Общий конспект всех 39 параграфов — открой в окне или скачай в PDF</p>
                 <div class="profile-conspekt-actions">
                     <button class="btn btn-primary" id="btn-download-conspekt">
-                        ⬇ <span data-i18n="profileConspektDownload">Скачать (.pdf)</span>
+                        <span data-i18n="profileConspektDownload">Открыть конспект</span>
                     </button>
+                    <button class="btn btn-secondary" id="btn-open-conspekt-pdf">
+                        ⬇ <span data-i18n="profileNotesDownload">Скачать конспект PDF</span>
+                    </button>
+                    <span class="profile-notes-language" id="profile-conspect-language"></span>
                 </div>
             </div>
             <button class="btn btn-back" id="btn-profile-back">
@@ -10132,7 +10137,15 @@ const EN_OFFSET = {
     40: "§39. Calendar basics"
 };
 Object.assign(LEVEL_NAMES_EN, EN_OFFSET);
-Object.assign(LEVEL_NAMES_KK, EN_OFFSET); // казахские имена используем те же (упрощённо)
+// Казахские названия берём из LOCALES (ключи levelNName), чтобы не подставлять английские.
+setTimeout(function () {
+    try {
+        Object.keys(LEVEL_NAMES_RU).forEach(function (id) {
+            const name = LOCALES.kk && LOCALES.kk["level" + id + "Name"];
+            if (name) LEVEL_NAMES_KK[id] = name;
+        });
+    } catch (_) {}
+}, 0);
 
 /* ============================================
    КРАТКАЯ ТЕОРИЯ ПЕРЕД УРОВНЕМ (ПОДРОБНО)
@@ -11684,9 +11697,11 @@ const LOCALES = {
         theoryTabTextbook: "📖 Учебник",
         theoryTabConspekt: "📘 Конспект",
         profileConspektTitle: "📘 Полный конспект",
-        profileConspektNote: "Общий конспект всех 39 параграфов — скачай в PDF",
+        profileConspektNote: "Общий конспект всех 39 параграфов — открой в окне или скачай в PDF",
         profileConspektOpen: "Открыть",
-        profileConspektDownload: "Скачать (.pdf)",
+        profileConspektDownload: "Открыть конспект",
+        profileNotesDownload: "Скачать конспект PDF",
+        profileNotesLanguage: "Язык конспекта: русский",
         theoryBack: "← Назад",
 
         // Уровни
@@ -12084,9 +12099,11 @@ const LOCALES = {
         theoryTabTextbook: "📖 Textbook",
         theoryTabConspekt: "📘 Conspectus",
         profileConspektTitle: "📘 Full conspectus",
-        profileConspektNote: "A common conspectus of all 39 sections — download as PDF",
+        profileConspektNote: "A common conspectus of all 39 sections — open it here or download as PDF",
         profileConspektOpen: "Open",
-        profileConspektDownload: "Download (.pdf)",
+        profileConspektDownload: "Open conspectus",
+        profileNotesDownload: "Download conspectus PDF",
+        profileNotesLanguage: "Conspectus language: English",
         theoryBack: "← Back",
 
         selectLevel: "Select level",
@@ -12471,9 +12488,11 @@ const LOCALES = {
         theoryTabTextbook: "📖 Оқулық",
         theoryTabConspekt: "📘 Конспект",
         profileConspektTitle: "📘 Толық конспект",
-        profileConspektNote: "Барлық 39 параграфтың ортақ конспектісі — PDF жүктеп ал",
+        profileConspektNote: "Барлық 39 параграфтың ортақ конспектісі — терезеде аш немесе PDF жүктеп ал",
         profileConspektOpen: "Ашу",
-        profileConspektDownload: "Жүктеп алу (.pdf)",
+        profileConspektDownload: "Конспектті ашу",
+        profileNotesDownload: "Конспект PDF жүктеу",
+        profileNotesLanguage: "Конспект тілі: қазақша",
         theoryBack: "← Артқа",
 
         selectLevel: "Деңгейді таңда",
@@ -16516,6 +16535,10 @@ function setupMainMenu() {
 
     document.getElementById("btn-teacher").addEventListener("click", () => {
         showScreen("teacher-screen");
+        // Списки уровней могли быть построены на другом языке — обновляем их при входе
+        Teacher.populateTopicSelect(true);
+        Teacher.populateAssignmentLevelSelect(true);
+        Teacher.populateAssignmentLevelSelect(true, "class-assignment-level");
         Teacher.switchTab("create");
     });
 
@@ -16621,6 +16644,13 @@ function setupMainMenu() {
 }
 
 function refreshAfterLangChange() {
+    if (typeof updateConspektLanguageLabel === "function") updateConspektLanguageLabel();
+    // Списки уровней в режиме учителя зависят от языка — обновляем всегда
+    if (typeof Teacher !== "undefined") {
+        Teacher.populateTopicSelect(true);
+        Teacher.populateAssignmentLevelSelect(true);
+        Teacher.populateAssignmentLevelSelect(true, "class-assignment-level");
+    }
     // Обновить заголовки экранов, если они уже были открыты
     const active = document.querySelector(".screen.active");
     if (active?.id === "level-screen") showLevelSelect();
@@ -17019,6 +17049,12 @@ function openConspektFull() {
     document.getElementById("conspekt-modal").classList.add("active");
 }
 
+function updateConspektLanguageLabel() {
+    const el = document.getElementById("profile-conspect-language");
+    if (!el) return;
+    el.textContent = I18n.t("profileNotesLanguage");
+}
+
 function downloadConspektPdf() {
     try {
         const L = I18n.currentLang;
@@ -17090,6 +17126,7 @@ function getRpgPerks(){try{const old=JSON.parse(localStorage.getItem('pq7_rpg_pe
 function showProfile() {
     const s = Storage.getSettings();
     renderRpgHub();
+    updateConspektLanguageLabel();
     document.getElementById("profile-name").value = s.playerName || "";
     const playerIdField = document.getElementById("profile-player-id");
     if (playerIdField) playerIdField.value = s.playerId || "";
@@ -17148,7 +17185,10 @@ function setupModals() {
     document.querySelectorAll("#theory-tabs .theory-tab").forEach(b => {
         b.addEventListener("click", () => setTheoryTab(b.dataset.tab));
     });
-    document.getElementById("btn-download-conspekt").addEventListener("click", downloadConspektPdf);
+    document.getElementById("btn-download-conspekt").addEventListener("click", openConspektFull);
+    const conspektPdfBtn = document.getElementById("btn-open-conspekt-pdf");
+    if (conspektPdfBtn) conspektPdfBtn.addEventListener("click", downloadConspektPdf);
+    updateConspektLanguageLabel();
     document.getElementById("btn-conspekt-close").addEventListener("click", () => {
         document.getElementById("conspekt-modal").classList.remove("active");
     });
@@ -20434,6 +20474,221 @@ const MaintenanceReview=(()=>{
  function injectRunButton(screenSelector){const screen=document.querySelector(screenSelector);if(!screen||!read().some(x=>!x.fixed)||screen.querySelector('[data-maintenance="start"]'))return;const btn=document.createElement('button');btn.type='button';btn.className='btn btn-secondary rpg-blackbox-open';btn.dataset.maintenance='start';btn.textContent='🛠 Разобрать ошибки · техобслуживание';const actions=screen.querySelector('.victory-buttons,.gameover-buttons');if(actions)actions.before(btn);else screen.appendChild(btn)}
  function init(){bind();const oldWin=Game.showVictory.bind(Game),oldOver=Game.showGameOver.bind(Game);Game.showVictory=function(r){oldWin(r);injectRunButton('.victory-content')};Game.showGameOver=function(r){oldOver(r);injectRunButton('.gameover-content')}}
  return {record,readSubmittedAnswer,renderPanel,init,start};
+})();
+</script>
+
+
+
+
+
+
+
+
+<script id="pq7-ui-l10n">
+/* ============================================================
+   UI L10N LAYER (7 класс)
+   Переводит оставшиеся «зашитые» русские подписи интерфейса,
+   которые не были подключены к LOCALES / data-i18n.
+   Словарь RU→EN/KK + правила для чисел и единиц.
+   При возврате на русский текст восстанавливается.
+   ============================================================ */
+(function () {
+  if (window.__PQ_UI_L10N) return;
+  const TRIPLES = [["ПИЛОТ ЭКВИЛИБРИУМА", "EQUILIBRIUM PILOT", "ЭКВИЛИБРИУМ ҰШҚЫШЫ"], ["🧬 Открыть штаб", "🧬 Open HQ", "🧬 Штабты ашу"], ["🧬 Штаб", "🧬 HQ", "🧬 Штаб"], ["🚀 Курсант", "🚀 Cadet", "🚀 Курсант"], ["Курсант", "Cadet", "Курсант"], ["Исследователь", "Explorer", "Зерттеуші"], ["Навигатор", "Navigator", "Навигатор"], ["Защитник города", "City Defender", "Қала қорғаушысы"], ["Легенда экспедиции", "Expedition Legend", "Экспедиция аңызы"], ["СЮЖЕТНЫЕ ПОЛЕВЫЕ ИСПЫТАНИЯ", "STORY FIELD TRIALS", "СЮЖЕТТІК ДАЛАЛЫҚ СЫНАҚТАР"], ["🧪 Симуляторы экспедиции", "🧪 Expedition simulators", "🧪 Экспедиция симуляторлары"], ["интерактивных лабораторий по темам §3–§35 — открыты в любом порядке: меняй параметры, сравнивай результаты и собирай журнал экспедиции.", "interactive labs on topics §3–§35 — open in any order: change parameters, compare results and build your expedition log.", "§3–§35 тақырыптары бойынша интерактивті зертханалар — кез келген ретпен ашылады: параметрлерді өзгерт, нәтижелерді салыстыр және экспедиция журналын жина."], ["🔑 Фрагменты ключа:", "🔑 Key fragments:", "🔑 Кілт фрагменттері:"], ["Начать симуляцию →", "Start simulation →", "Симуляцияны бастау →"], ["✓ Пройдено", "✓ Completed", "✓ Өтілді"], ["Закрыто", "Locked", "Жабық"], ["🔒 Завершите предыдущее испытание", "🔒 Complete the previous trial", "🔒 Алдыңғы сынақты аяқтаңыз"], ["Фрагмент ключа найден · повторить опыт", "Key fragment found · repeat the experiment", "Кілт фрагменті табылды · тәжірибені қайталау"], ["📡 Квант: «Станция потеряла управление. Пройди испытания, чтобы восстановить щит».", "📡 Quant: “The station has lost control. Complete the trials to restore the shield.”", "📡 Квант: «Станция басқарудан шықты. Қалқанды қалпына келтіру үшін сынақтардан өт»."], ["✨ Квант: «Все фрагменты собраны! Энергетический щит восстановлен. Город в безопасности — отличная работа, инженер!»", "✨ Quant: “All fragments collected! The energy shield is restored. The city is safe — great work, engineer!”", "✨ Квант: «Барлық фрагменттер жиналды! Энергетикалық қалқан қалпына келтірілді. Қала қауіпсіз — тамаша жұмыс, инженер!»"], ["📡 Квант: «Фрагмент", "📡 Quant: “Fragment", "📡 Квант: «Фрагмент"], ["БРИФИНГ МИССИИ · ВЫБОР РЕЖИМА", "MISSION BRIEFING · MODE SELECT", "МИССИЯ БРИФИНГІ · РЕЖИМ ТАҢДАУ"], ["Выбери дизайн миссии", "Choose the mission design", "Миссия дизайнын таңда"], ["🎯 Цель:", "🎯 Goal:", "🎯 Мақсат:"], ["⭐ Награда:", "⭐ Reward:", "⭐ Сыйлық:"], ["💡 Для этого уровня рекомендуем:", "💡 Recommended for this level:", "💡 Бұл деңгейге ұсынылады:"], ["📖 Теория уровня", "📖 Level theory", "📖 Деңгей теориясы"], ["🚀 Начать миссию", "🚀 Start mission", "🚀 Миссияны бастау"], ["Учебный вылет", "Training flight", "Оқу ұшуы"], ["Спокойный темп", "Calm pace", "Баяу қарқын"], ["Обычная скорость и стандартная защита — лучший выбор для первого прохождения.", "Normal speed and standard protection — the best choice for a first playthrough.", "Қалыпты жылдамдық пен стандартты қорғаныс — бірінші өтуге ең жақсы таңдау."], ["— Выбери для знакомства с темой и спокойного разбора задач.", "— Choose it to get acquainted with the topic and calmly work through tasks.", "— Тақырыппен танысу және тапсырмаларды байыппен талдау үшін таңда."], ["💡 Выбери для знакомства с темой и спокойного разбора задач.", "💡 Choose it to get acquainted with the topic and calmly work through tasks.", "💡 Тақырыппен танысу және тапсырмаларды байыппен талдау үшін таңда."], ["Сбор энергии", "Energy harvest", "Энергия жинау"], ["Экспедиция за ресурсами", "Resource expedition", "Ресурстарға экспедиция"], ["Медленные астероиды, частые энергоядра и увеличенный радиус сбора.", "Slow asteroids, frequent energy cores and a larger collection radius.", "Баяу астероидтар, жиі энергия ядролары және ұлғайтылған жинау радиусы."], ["💡 Подходит, если нужно больше времени на ответы и хочется собрать ресурсы.", "💡 Good if you need more time to answer and want to collect resources.", "💡 Жауап беруге көбірек уақыт керек болса және ресурс жинағыңыз келсе, қолайлы."], ["Охота на ядро", "Core hunt", "Ядроға аңшылық"], ["Босс-миссия", "Boss mission", "Босс-миссия"], ["Верные ответы наносят урон ядру; ошибки дают боссу восстановить часть здоровья.", "Correct answers damage the core; mistakes let the boss restore some health.", "Дұрыс жауаптар ядроға зақым келтіреді; қателер боссқа денсаулығының бір бөлігін қалпына келтіруге мүмкіндік береді."], ["💡 Выбирай, когда уже уверенно решаешь задания этой темы.", "💡 Choose it when you already solve tasks on this topic confidently.", "💡 Осы тақырыптағы тапсырмаларды сенімді шығаратын болсаңыз, таңдаңыз."], ["Блиц-рейд", "Blitz raid", "Блиц-рейд"], ["Испытание на скорость", "Speed challenge", "Жылдамдық сынағы"], ["Астероиды летят быстрее и появляются чаще; за быстрые ответы — повышенная награда.", "Asteroids fly faster and appear more often; fast answers earn a bigger reward.", "Астероидтар тезірек ұшады және жиі пайда болады; жылдам жауаптарға жоғары сыйлық."], ["💡 Подходит для повторения уже знакомого материала, не для первого изучения.", "💡 Good for revising familiar material, not for learning it for the first time.", "💡 Таныс материалды қайталауға жарайды, алғаш үйренуге емес."], ["Штурм волнами", "Wave assault", "Толқынмен шабуыл"], ["Режим выживания", "Survival mode", "Тіршілік режимі"], ["Каждые шесть астероидов начинается новая волна; скорость угроз растёт.", "Every six asteroids a new wave starts; the threats get faster.", "Әр алты астероидтан кейін жаңа толқын басталады; қауіп жылдамдығы артады."], ["💡 Выбирай для сложного повторного прохождения и тренировки устойчивости.", "💡 Choose it for a tough replay and training your resilience.", "💡 Күрделі қайта өту және төзімділікті жаттықтыру үшін таңда."], ["Сохранить город выше 80%", "Keep the city above 80%", "Қаланы 80%-дан жоғары ұстау"], ["Собрать 12 энергоядер", "Collect 12 energy cores", "12 энергия ядросын жинау"], ["Уничтожить ядро Астериона", "Destroy the Asterion core", "Астерион ядросын жою"], ["Дать 8 быстрых ответов", "Give 8 fast answers", "8 жылдам жауап беру"], ["Пережить 3 волны", "Survive 3 waves", "3 толқыннан аман өту"], ["📖 Кратко о кампании", "📖 Campaign overview", "📖 Науқан туралы қысқаша"], ["👩‍🚀 Герои экспедиции", "👩‍🚀 Expedition heroes", "👩‍🚀 Экспедиция кейіпкерлері"], ["📖 Лор этой главы", "📖 Chapter lore", "📖 Осы тараудың лоры"], ["Сюжет: Энергетический щит Астерии", "Story: The Energy Shield of Asteria", "Сюжет: Астерияның энергетикалық қалқаны"], ["Текущая цель:", "Current objective:", "Ағымдағы мақсат:"], ["Задача главы:", "Chapter objective:", "Тарау мақсаты:"], ["ШТАБ ПИЛОТА · ЭКВИЛИБРИУМ", "PILOT HQ · EQUILIBRIUM", "ҰШҚЫШ ШТАБЫ · ЭКВИЛИБРИУМ"], ["миссий пройдено", "missions completed", "миссия өтілді"], ["кристаллы", "crystals", "кристаллдар"], ["очков навыков", "skill points", "дағды ұпайы"], ["достижений", "achievements", "жетістік"], ["🧠 Навыки", "🧠 Skills", "🧠 Дағдылар"], ["🔮 Артефакты", "🔮 Artifacts", "🔮 Артефактілер"], ["📜 Задания", "📜 Quests", "📜 Тапсырмалар"], ["🎖 Достижения", "🎖 Achievements", "🎖 Жетістіктер"], ["🛠 Ошибки", "🛠 Mistakes", "🛠 Қателер"], ["Прокачать · 1 SP", "Upgrade · 1 SP", "Дамыту · 1 SP"], ["· экипирован", "· equipped", "· киілген"], ["Надеть", "Equip", "Кию"], ["Купить", "Buy", "Сатып алу"], ["Получено", "Claimed", "Алынды"], ["Забрать награду", "Claim reward", "Сыйлықты алу"], ["В процессе", "In progress", "Орындалуда"], ["· награда", "· reward", "· сыйлық"], ["🛡 Инженер щита", "🛡 Shield engineer", "🛡 Қалқан инженері"], ["+10 энергии щита в начале уровня", "+10 shield energy at the start of a level", "Деңгей басында +10 қалқан энергиясы"], ["🔧 Механик", "🔧 Mechanic", "🔧 Механик"], ["+5 здоровья города за верный ответ", "+5 city health for a correct answer", "Дұрыс жауап үшін +5 қала денсаулығы"], ["🎯 Тактик", "🎯 Tactician", "🎯 Тактик"], ["+50 стартовых очков за ранг", "+50 starting points per rank", "Әр дәреже үшін +50 бастапқы ұпай"], ["📚 Исследователь", "📚 Researcher", "📚 Зерттеуші"], ["+1 подсказка в каждом задании", "+1 hint in every task", "Әр тапсырмада +1 кеңес"], ["💠 Кристалл фокуса", "💠 Focus crystal", "💠 Фокус кристалы"], ["+15% XP за победу", "+15% XP for a victory", "Жеңіс үшін +15% XP"], ["🧿 Ядро щита", "🧿 Shield core", "🧿 Қалқан ядросы"], ["+15 энергии щита на старте миссии", "+15 shield energy at mission start", "Миссия басында +15 қалқан энергиясы"], ["⏳ Хронометр Кванта", "⏳ Quant chronometer", "⏳ Квант хронометрі"], ["+1 подсказка к каждому вопросу", "+1 hint per question", "Әр сұраққа +1 кеңес"], ["Полевой исследователь", "Field researcher", "Далалық зерттеуші"], ["Заверши 2 симулятора по темам параграфов", "Complete 2 simulators on paragraph topics", "Параграф тақырыптары бойынша 2 симуляторды аяқта"], ["Знаток физики", "Physics expert", "Физика білгірі"], ["Ответь верно на 20 вопросов в миссиях", "Answer 20 questions correctly in missions", "Миссияларда 20 сұраққа дұрыс жауап бер"], ["Три звезды", "Three stars", "Үш жұлдыз"], ["Получи 3 звезды за любую миссию", "Get 3 stars for any mission", "Кез келген миссия үшін 3 жұлдыз ал"], ["Первый вылет", "First flight", "Бірінші ұшу"], ["Ключ восстановлен", "Key restored", "Кілт қалпына келтірілді"], ["Безупречная миссия", "Flawless mission", "Мінсіз миссия"], ["Коллекционер", "Collector", "Коллекционер"], ["Легенда штаба", "HQ legend", "Штаб аңызы"], ["🗃 Чёрный ящик · ошибки для разбора", "🗃 Black box · mistakes to review", "🗃 Қара жәшік · талқылауға арналған қателер"], ["в очереди", "in queue", "кезекте"], ["✅ Очередь пуста. Ошибки из следующих миссий появятся здесь для повторения.", "✅ The queue is empty. Mistakes from upcoming missions will appear here for review.", "✅ Кезек бос. Келесі миссиялардағы қателер осында қайталау үшін шығады."], ["Разобрать ошибки", "Review mistakes", "Қателерді талдау"], ["Разобрать", "Review", "Талдау"], ["Да", "Yes", "Иә"], ["Нет", "No", "Жоқ"], ["ответ не выбран", "no answer selected", "жауап таңдалмаған"], ["🛠 Пока нечего ремонтировать — сначала разберись с вопросом, в котором ошибся.", "🛠 Nothing to repair yet — first work through a question you got wrong.", "🛠 Әзірге жөндейтін нәрсе жоқ — алдымен қателескен сұрағыңды талда."], ["⚙ Управление классами и групповая рассылка (необязательно)", "⚙ Class management and group sending (optional)", "⚙ Сыныптарды басқару және топтық жіберу (міндетті емес)"], ["Быстро назначить одному ученику", "Assign quickly to one student", "Бір оқушыға жылдам тағайындау"], ["Дополнительные параметры (ID и комментарий)", "Additional options (ID and note)", "Қосымша параметрлер (ID және түсініктеме)"], ["Импорт, экспорт и результаты (дополнительно)", "Import, export and results (advanced)", "Импорт, экспорт және нәтижелер (қосымша)"], ["Классы ещё не созданы.", "No classes created yet.", "Сыныптар әлі құрылмаған."], ["Классов пока нет.", "No classes yet.", "Әзірге сынып жоқ."], ["Добавить вариант:", "Add option:", "Нұсқа қосу:"], ["+ Добавить вариант", "+ Add option", "+ Нұсқа қосу"], ["Правильный ответ:", "Correct answer:", "Дұрыс жауап:"], ["○ выберите один правильный", "○ choose one correct option", "○ бір дұрыс нұсқаны таңдаңыз"], ["⚙ Управление классами и групповая рассылка", "⚙ Class management and group sending", "⚙ Сыныптарды басқару және топтық жіберу"], ["Учитель может отсканировать QR-код, открыть ссылку или использовать короткий код выше.", "The teacher can scan the QR code, open the link or use the short code above.", "Мұғалім QR-кодты сканерлеп, сілтемені ашып немесе жоғарыдағы қысқа кодты пайдалана алады."], ["📷 Назначение по QR-коду", "📷 Assign by QR code", "📷 QR-код арқылы тағайындау"], ["Ученик сканирует код камерой — назначенный урок появится в его списке.", "The student scans the code with the camera — the assigned lesson appears in their list.", "Оқушы кодты камерамен сканерлейді — тағайындалған сабақ оның тізімінде пайда болады."], ["Ссылка для отправки", "Link to send", "Жіберуге арналған сілтеме"], ["🔗 Скопировать ссылку", "🔗 Copy link", "🔗 Сілтемені көшіру"], ["Копировать код", "Copy code", "Кодты көшіру"], ["Готово", "Done", "Дайын"], ["👩‍🏫 Назначено", "👩‍🏫 Assigned", "👩‍🏫 Тағайындалды"], ["⚠ Бонус", "⚠ Bonus", "⚠ Бонус"], ["⏱ Хронометр", "⏱ Chronometer", "⏱ Хронометр"], ["Лицензия", "License", "Лицензия"], ["Попытки: 0 / 5", "Attempts: 0 / 5", "Әрекеттер: 0 / 5"], ["Подсказки: 3", "Hints: 3", "Кеңестер: 3"], ["0 / 100 XP", "0 / 100 XP", "0 / 100 XP"], ["Глава 1 · Единицы СИ", "Chapter 1 · SI units", "1-тарау · SI бірліктері"], ["Калибровка модуля", "Module calibration", "Модульді калибрлеу"], ["Квант: датчик длины спутал сантиметры и метры. Переведи измерение детали из сантиметров в метры и проверь масштаб корпуса.", "Quant: the length sensor confused centimetres and metres. Convert the part measurement from centimetres to metres and check the hull scale.", "Квант: ұзындық датчигі сантиметр мен метрді шатастырды. Бөлшек өлшемін сантиметрден метрге ауыстырып, корпус масштабын тексер."], ["Настрой деталь на 40–50 см и подтверди перевод в метры с точностью до 0,01 м.", "Set the part to 40–50 cm and confirm the conversion to metres with an accuracy of 0.01 m.", "Бөлшекті 40–50 см-ге қойып, метрге ауыстыруды 0,01 м дәлдікпен раста."], ["Попробуй 45 см и запиши результат в метрах.", "Try 45 cm and write the result in metres.", "45 см-ні қолданып көр де, нәтижені метрмен жаз."], ["Лаборатория · Точность измерений", "Lab · Measurement accuracy", "Зертхана · Өлшеу дәлдігі"], ["Метрологический пост", "Metrology post", "Метрологиялық бекет"], ["Лазерный дальномер потерял нулевую отметку. Выставь измерительную метку на шкале, сними показание и запиши его в журнал.", "The laser rangefinder has lost its zero mark. Set the measuring mark on the scale, take a reading and record it in the log.", "Лазерлік қашықтық өлшегіш нөлдік белгісінен айырылды. Өлшеу белгісін шкалаға қойып, көрсеткішті алып, журналға жаз."], ["Измерь контрольный отрезок длиной от 40 до 60 см, используя деления шкалы.", "Measure a reference segment from 40 to 60 cm using the scale divisions.", "Шкала бөліктерін пайдаланып, 40-тан 60 см-ге дейінгі бақылау кесіндісін өлше."], ["Нажми на шкалу, чтобы передвинуть метку; потом проведи измерение.", "Tap the scale to move the mark, then take the measurement.", "Белгіні жылжыту үшін шкалаға бас, сосын өлшеу жүргіз."], ["Лаборатория · Относительность движения", "Lab · Relativity of motion", "Зертхана · Қозғалыстың салыстырмалылығы"], ["Дождь в движущемся автобусе", "Rain in a moving bus", "Қозғалыстағы автобустағы жаңбыр"], ["Квант видит дождь из окна автобуса. Сравни показания наблюдателя на дороге и пассажира: один и тот же дождь движется относительно них по-разному.", "Quant sees rain from the bus window. Compare the readings of the observer on the road and the passenger: the same rain moves differently relative to them.", "Квант автобус терезесінен жаңбырды көреді. Жолдағы бақылаушы мен жолаушының көрсеткіштерін салыстыр: бір жаңбыр оларға қатысты әртүрлі қозғалады."], ["Проведи наблюдение из двух систем отсчёта и сравни перемещение капли за 5 секунд.", "Observe from two frames of reference and compare the drop's displacement over 5 seconds.", "Екі санақ жүйесінен бақылап, тамшының 5 секундтағы орын ауыстыруын салыстыр."], ["Выбери наблюдателя, нажми «Записать наблюдение», затем повтори для второго.", "Pick an observer, tap “Record observation”, then repeat for the second one.", "Бақылаушыны таңдап, «Бақылауды жазу» түймесін бас, сосын екіншісі үшін қайтала."], ["Глава 2 · Путь и скорость", "Chapter 2 · Distance and speed", "2-тарау · Жол және жылдамдық"], ["Навигация по траектории", "Trajectory navigation", "Траектория бойынша навигация"], ["Зонд потерял курс. Настрой путь и время перелёта, чтобы определить среднюю скорость и передать координаты спасателям.", "The probe has lost its course. Set the distance and flight time to find the average speed and send the coordinates to the rescuers.", "Зонд бағытын жоғалтты. Орташа жылдамдықты табу және құтқарушыларға координаттарды жіберу үшін жол мен ұшу уақытын орнат."], ["Выбери маршрут 30, 60 или 90 м и доведи зонд до маяка со средней скоростью 2–5 м/с.", "Choose a route of 30, 60 or 90 m and bring the probe to the beacon at an average speed of 2–5 m/s.", "30, 60 немесе 90 м маршрутты таңдап, зондты маякқа 2–5 м/с орташа жылдамдықпен жеткіз."], ["Выбери скорость 4 м/с и продвигай симуляцию шагами по 5 секунд.", "Choose a speed of 4 m/s and advance the simulation in steps of 5 seconds.", "4 м/с жылдамдықты таңдап, симуляцияны 5 секундтық қадамдармен ілгерілет."], ["Глава 3 · Плотность вещества", "Chapter 3 · Density of matter", "3-тарау · Заттың тығыздығы"], ["Неизвестный сплав", "Unknown alloy", "Белгісіз қорытпа"], ["Найден металлический фрагмент. Измерь его массу и объём, затем определи, подходит ли сплав для корпуса.", "A metal fragment has been found. Measure its mass and volume, then determine whether the alloy suits the hull.", "Металл сынығы табылды. Оның массасы мен көлемін өлшеп, қорытпа корпусқа жарамды ма, соны анықта."], ["По измерениям найди плотность сплава 2500–3000 кг/м³.", "Use measurements to find the alloy density in the range 2500–3000 kg/m³.", "Өлшеулер бойынша қорытпа тығыздығын 2500–3000 кг/м³ аралығында тап."], ["Сначала взвесь образец, затем измерь вытесненный им объём воды.", "Weigh the sample first, then measure the volume of water it displaces.", "Алдымен үлгіні өлшеп ал, сосын ол ығыстырған су көлемін өлше."], ["Лаборатория · Масса и сила тяжести", "Lab · Mass and gravity", "Зертхана · Масса және ауырлық күші"], ["Весовой пост на Луне", "Weighing post on the Moon", "Айдағы өлшеу бекеті"], ["Груз нужно доставить с Земли на Луну. Измерь его вес на обеих планетах и отдели постоянную массу от меняющейся силы тяжести.", "The cargo must be delivered from Earth to the Moon. Measure its weight on both planets and separate the constant mass from the changing gravity.", "Жүкті Жерден Айға жеткізу керек. Оның салмағын екі планетада да өлшеп, тұрақты массаны өзгеретін ауырлық күшінен ажырат."], ["Сравни вес одного и того же груза на Земле и Луне; затем повтори с другой массой.", "Compare the weight of the same load on Earth and on the Moon, then repeat with another mass.", "Бір жүктің Жердегі және Айдағы салмағын салыстыр, сосын басқа массамен қайтала."], ["Выбери планету и нажми «Взвесить» на каждой.", "Choose a planet and tap “Weigh” on each one.", "Планетаны таңдап, әрқайсысында «Өлшеу» түймесін бас."], ["Глава 4 · Сила трения", "Chapter 4 · Friction force", "4-тарау · Үйкеліс күші"], ["Тормозной стенд", "Brake test bench", "Тежегіш стенді"], ["Сервисный робот скользит по настилу. Исследуй материал и нагрузку, чтобы получить нужную силу сцепления.", "A service robot is sliding along the deck. Study the material and the load to get the required traction.", "Қызмет роботы төсеніште сырғанап барады. Қажетті ілініс күшін алу үшін материал мен жүктемені зертте."], ["Настрой силу трения в диапазоне 10–30 Н по формуле Fтр = μN.", "Set the friction force in the range 10–30 N using F(fr) = μN.", "Үйкеліс күшін Fүйк = μN формуласы бойынша 10–30 Н аралығында орнат."], ["Сначала измени только поверхность, потом только силу прижатия.", "Change only the surface first, then only the pressing force.", "Алдымен тек бетті, сосын тек басу күшін өзгерт."], ["Глава 5 · Давление твёрдых тел", "Chapter 5 · Pressure of solids", "5-тарау · Қатты денелердің қысымы"], ["Опора защитного купола", "Shield dome support", "Қорғаныс күмбезінің тірегі"], ["Опора купола давит на хрупкую платформу. Измени площадь опоры и силу, чтобы удержать платформу в безопасном диапазоне давления.", "The dome support presses on a fragile platform. Change the support area and the force to keep the platform within a safe pressure range.", "Күмбез тірегі нәзік платформаға қысым түсіреді. Платформаны қауіпсіз қысым аралығында ұстау үшін тірек ауданы мен күшті өзгерт."], ["Подбери давление 150–350 кПа, используя p = F/S.", "Set a pressure of 150–350 kPa using p = F/S.", "p = F/S формуласын пайдаланып, 150–350 кПа қысымды орнат."], ["Расширяй площадь опоры: одинаковая сила создаёт меньшее давление.", "Increase the support area: the same force creates less pressure.", "Тірек ауданын ұлғайт: бірдей күш азырақ қысым жасайды."], ["Лаборатория · Давление жидкости", "Lab · Liquid pressure", "Зертхана · Сұйықтық қысымы"], ["Глубинный датчик", "Depth sensor", "Тереңдік датчигі"], ["Датчик в резервуаре подаёт тревогу. Опусти его на разную глубину и проследи, как меняется давление воды.", "The sensor in the tank is raising an alarm. Lower it to different depths and trace how the water pressure changes.", "Резервуардағы датчик дабыл қағады. Оны әртүрлі тереңдікке түсіріп, су қысымының қалай өзгеретінін бақыла."], ["Сравни давление на разных глубинах и в разных жидкостях; объясни две зависимости.", "Compare pressure at different depths and in different liquids; explain both relationships.", "Әртүрлі тереңдіктегі және әртүрлі сұйықтықтағы қысымды салыстыр; екі тәуелділікті түсіндір."], ["Кнопки перемещают датчик шагами по 10 см; нажми «Снять показание».", "The buttons move the sensor in steps of 10 cm; press “Take reading”.", "Түймелер датчикті 10 см қадаммен жылжытады; «Көрсеткішті алу» түймесін бас."], ["Глава 6 · Гидравлическая машина", "Chapter 6 · Hydraulic machine", "6-тарау · Гидравликалық машина"], ["Гидравлический подъёмник", "Hydraulic lift", "Гидравликалық көтергіш"], ["Нужно поднять шлюз тяжёлой брони. Настрой площади поршней и входное усилие — проверь закон Паскаля.", "A heavy armoured gate has to be lifted. Set the piston areas and the input force — check Pascal's law.", "Ауыр сауытты қақпаны көтеру керек. Поршень аудандары мен кіріс күшін орнат — Паскаль заңын тексер."], ["Получить выходную силу не меньше 600 Н без превышения входных 150 Н.", "Obtain an output force of at least 600 N without exceeding 150 N at the input.", "Кірістегі 150 Н-нан аспай, кемінде 600 Н шығыс күшін ал."], ["Сравни площадь поршней; выходная сила растёт вместе с их отношением.", "Compare the piston areas; the output force grows with their ratio.", "Поршень аудандарын салыстыр; шығыс күш олардың қатынасымен бірге артады."], ["Лаборатория · Жидкость в сообщающихся сосудах", "Lab · Liquid in communicating vessels", "Зертхана · Қатынас ыдыстардағы сұйықтық"], ["Станция сообщающихся сосудов", "Communicating vessels station", "Қатынас ыдыстар станциясы"], ["Вода проходит по трубам разной формы. Запусти заполнение и сравни уровни: форма колена меняется, но равновесные уровни должны совпасть.", "Water flows through pipes of different shapes. Start filling and compare the levels: the shape of the bend changes but the equilibrium levels must match.", "Су әртүрлі пішінді құбырлардан өтеді. Құюды бастап, деңгейлерді салыстыр: иілу пішіні өзгереді, бірақ тепе-теңдік деңгейлері сәйкес болуы керек."], ["Заполни систему и подтверди равенство уровней в обеих ветвях.", "Fill the system and confirm that the levels in both branches are equal.", "Жүйені толтырып, екі тармақтағы деңгейлердің теңдігін раста."], ["Нажми «Подать воду» несколько раз и прочитай обе шкалы.", "Press “Supply water” several times and read both scales.", "«Су беру» түймесін бірнеше рет басып, екі шкаланы да оқы."], ["Глава 7 · Закон Архимеда", "Chapter 7 · Archimedes' law", "7-тарау · Архимед заңы"], ["Спасательный буй", "Rescue buoy", "Құтқару бусы"], ["Контейнер упал в водный отсек. Измени вытесненный объём и массу груза, чтобы буй удерживал контейнер на поверхности.", "A container has fallen into the water compartment. Change the displaced volume and the load mass so the buoy keeps the container on the surface.", "Контейнер су бөлігіне құлап түсті. Бу контейнерді бетінде ұстауы үшін ығыстырылған көлем мен жүк массасын өзгерт."], ["Сила Архимеда должна быть не меньше силы тяжести груза.", "The buoyant force must be at least equal to the weight of the load.", "Архимед күші жүктің ауырлық күшінен кем болмауы керек."], ["Увеличивай погружённый объём и наблюдай, когда выталкивающая сила удержит груз.", "Increase the immersed volume and watch when the buoyant force holds the load.", "Батырылған көлемді ұлғайтып, көтергіш күш жүкті ұстайтын сәтті бақыла."], ["Глава 8 · Работа и мощность", "Chapter 8 · Work and power", "8-тарау · Жұмыс және қуат"], ["Турбина станции", "Station turbine", "Станция турбинасы"], ["Энергогенератор не набирает мощность. Настрой силу, путь и время хода поршня, чтобы восстановить питание щита.", "The power generator is not reaching its output. Set the force, distance and piston stroke time to restore the shield's power.", "Энергия генераторы қуат жинамайды. Қалқан қорегін қалпына келтіру үшін күш, жол және поршень жүрісінің уақытын орнат."], ["Рассчитай мощность в диапазоне 50–120 Вт: P = Fs/t.", "Calculate the power in the range 50–120 W: P = Fs/t.", "Қуатты 50–120 Вт аралығында есепте: P = Fs/t."], ["Оставь силу и путь прежними, сократи время — мощность возрастёт.", "Keep force and distance the same, shorten the time — the power will grow.", "Күш пен жолды бұрынғыдай қалдырып, уақытты қысқарт — қуат артады."], ["Глава 9 · Превращение энергии", "Chapter 9 · Energy transformation", "9-тарау · Энергияның айналуы"], ["Капсула кинетической энергии", "Kinetic energy capsule", "Кинетикалық энергия капсуласы"], ["Капсула падает в энергетическую шахту. Проследи, как потенциальная энергия превращается в кинетическую, не теряя общий запас.", "The capsule falls into the energy shaft. Trace how potential energy turns into kinetic energy without losing the total.", "Капсула энергетикалық шахтаға түседі. Потенциалдық энергияның жалпы қорды жоғалтпай кинетикалық энергияға айналуын бақыла."], ["Запусти капсулу с высоты и проверь сохранение полной механической энергии.", "Launch the capsule from a height and verify that total mechanical energy is conserved.", "Капсуланы биіктіктен ұшырып, толық механикалық энергияның сақталуын тексер."], ["Проверь капсулу на 40%, 60% и 80% пути и сравни Eₖ и Eₚ.", "Check the capsule at 40%, 60% and 80% of the path and compare Eₖ and Eₚ.", "Капсуланы жолдың 40%, 60% және 80% нүктелерінде тексеріп, Eₖ мен Eₚ-ны салыстыр."], ["Глава 10 · Равновесие рычага", "Chapter 10 · Lever equilibrium", "10-тарау · Иінтіректің тепе-теңдігі"], ["Рычаг аварийного шлюза", "Emergency hatch lever", "Апаттық шлюз иінтірегі"], ["Последний фрагмент ключа заперт под тяжёлой плитой. Найди плечо рычага, при котором моменты сил уравновешены.", "The last key fragment is locked under a heavy plate. Find the lever arm at which the moments of force balance.", "Соңғы кілт фрагменті ауыр плитаның астында құлыпталған. Күш моменттері теңелетін иін табыңыз."], ["Добейся равновесия: F₁·l₁ ≈ F₂·l₂ с ошибкой не больше 10%.", "Achieve equilibrium: F₁·l₁ ≈ F₂·l₂ with an error of no more than 10%.", "Тепе-теңдікке жет: F₁·l₁ ≈ F₂·l₂, қателік 10%-дан аспасын."], ["Сначала уравняй моменты F₁·l₁ и F₂·l₂, изменяя только плечо.", "First equalise the moments F₁·l₁ and F₂·l₂ by changing only the arm.", "Алдымен тек иінді өзгерте отырып, F₁·l₁ мен F₂·l₂ моменттерін теңестір."], ["Если перевести сантиметры в метры, что нужно сделать с числом?", "If you convert centimetres to metres, what should you do with the number?", "Сантиметрді метрге ауыстырғанда санмен не істеу керек?"], ["Разделить на 100", "Divide by 100", "100-ге бөлу"], ["Умножить на 100", "Multiply by 100", "100-ге көбейту"], ["Вычесть 100", "Subtract 100", "100-ді азайту"], ["Переведи показание контрольной детали 45 см в метры.", "Convert the reference part reading of 45 cm to metres.", "Бақылау бөлшегінің 45 см көрсеткішін метрге ауыстыр."], ["Какое измерение надёжнее всего показывает шкала?", "Which measurement does the scale show most reliably?", "Қай өлшеу шкала бойынша ең сенімді?"], ["Положение метки совпало с делением", "The mark coincides with a division", "Белгі бөлікке дәл сәйкес келді"], ["Число выбрано до измерения", "The number was chosen before measuring", "Сан өлшеуден бұрын таңдалды"], ["Длина не зависит от нулевой отметки", "The length does not depend on the zero mark", "Ұзындық нөлдік белгіге тәуелді емес"], ["Введи измеренную длину стержня.", "Enter the measured length of the rod.", "Өлшенген өзек ұзындығын енгіз."], ["Капля движется 6 м/с, автобус — 5 м/с в том же направлении. Скорость капли относительно пассажира…", "The drop moves at 6 m/s, the bus at 5 m/s in the same direction. The speed of the drop relative to the passenger is…", "Тамшы 6 м/с, автобус сол бағытта 5 м/с жылдамдықпен қозғалады. Тамшының жолаушыға қатысты жылдамдығы…"], ["11 м/с", "11 m/s", "11 м/с"], ["1 м/с", "1 m/s", "1 м/с"], ["6 м/с", "6 m/s", "6 м/с"], ["Найди разность показаний двух наблюдателей.", "Find the difference between the readings of the two observers.", "Екі бақылаушының көрсеткіштерінің айырмасын тап."], ["При неизменном пути, если скорость увеличить вдвое, время движения…", "At an unchanged distance, if the speed doubles, the travel time…", "Жол өзгермесе, жылдамдықты екі есе арттырса, қозғалыс уақыты…"], ["Уменьшится вдвое", "Halves", "Екі есе азаяды"], ["Увеличится вдвое", "Doubles", "Екі есе артады"], ["Не изменится", "Stays the same", "Өзгермейді"], ["Рассчитай среднюю скорость зонда по журналу.", "Calculate the probe's average speed from the log.", "Журнал бойынша зондтың орташа жылдамдығын есепте."], ["Для одного и того же материала, если масса и объём увеличатся одинаково, плотность…", "For the same material, if mass and volume increase equally, the density…", "Бір материал үшін масса мен көлем бірдей артса, тығыздық…"], ["Останется прежней", "Stays the same", "Бұрынғыдай қалады"], ["Вычисли плотность сплава по массе и вытесненному объёму.", "Calculate the alloy density from the mass and displaced volume.", "Қорытпа тығыздығын масса мен ығыстырылған көлем бойынша есепте."], ["При перевозке одного груза с Земли на Луну какая величина сохраняется?", "When transporting the same load from Earth to the Moon, which quantity is conserved?", "Бір жүкті Жерден Айға жеткізгенде қандай шама сақталады?"], ["Масса", "Mass", "Масса"], ["Вес", "Weight", "Салмақ"], ["Ускорение свободного падения", "Free-fall acceleration", "Еркін түсу үдеуі"], ["Вычисли разность весов на Земле и Луне для выбранной массы.", "Calculate the difference in weight on Earth and the Moon for the chosen mass.", "Таңдалған масса үшін Жер мен Айдағы салмақ айырмасын есепте."], ["При одинаковой силе прижатия более шероховатая поверхность обычно создаёт…", "With the same pressing force, a rougher surface usually produces…", "Бірдей басу күшінде кедір-бұдыр бет әдетте…"], ["Большую силу трения", "A greater friction force", "Үлкен үйкеліс күшін тудырады"], ["Меньшую силу трения", "A smaller friction force", "Кіші үйкеліс күшін тудырады"], ["Такую же силу трения", "The same friction force", "Сол үйкеліс күшін тудырады"], ["Вычисли силу трения для выбранной поверхности.", "Calculate the friction force for the chosen surface.", "Таңдалған бет үшін үйкеліс күшін есепте."], ["Если площадь опоры увеличить в 4 раза при той же силе, давление…", "If the support area is increased 4 times at the same force, the pressure…", "Тірек ауданын 4 есе арттырса (күш сол қалса), қысым…"], ["Уменьшится в 4 раза", "Decreases 4 times", "4 есе азаяды"], ["Увеличится в 4 раза", "Increases 4 times", "4 есе артады"], ["Рассчитай давление на платформу по последнему опыту.", "Calculate the pressure on the platform from the last experiment.", "Соңғы тәжірибе бойынша платформаға түсетін қысымды есепте."], ["При погружении глубже давление жидкости…", "The deeper you go, the liquid pressure…", "Тереңірек батқанда сұйықтық қысымы…"], ["Возрастает", "Increases", "Артады"], ["Уменьшается", "Decreases", "Азаяды"], ["Не меняется", "Stays the same", "Өзгермейді"], ["Рассчитай давление выбранной жидкости на измеренной глубине.", "Calculate the pressure of the chosen liquid at the measured depth.", "Таңдалған сұйықтықтың өлшенген тереңдіктегі қысымын есепте."], ["В гидравлическом устройстве выходная сила растёт, если…", "In a hydraulic device the output force grows if…", "Гидравликалық құрылғыда шығыс күш артады, егер…"], ["Площадь большого поршня больше относительно малого", "The large piston area is greater than the small one", "Үлкен поршень ауданы кішісіне қарағанда үлкен болса"], ["Оба поршня одинаковы независимо от силы", "Both pistons are equal regardless of force", "Екі поршень де күшке қарамастан бірдей болса"], ["Уменьшить давление жидкости", "The liquid pressure is reduced", "Сұйықтық қысымын азайтса"], ["Рассчитай выходную силу подъёмника по последнему опыту.", "Calculate the output force of the lift from the last experiment.", "Соңғы тәжірибе бойынша көтергіштің шығыс күшін есепте."], ["В сообщающихся сосудах с одной и той же жидкостью после успокоения уровни…", "In communicating vessels with the same liquid, after settling the levels are…", "Бір сұйықтығы бар қатынас ыдыстарда тынышталғаннан кейін деңгейлер…"], ["Одинаковы", "Equal", "Бірдей"], ["Выше в широкой ветви", "Higher in the wide branch", "Кең тармақта биік"], ["Выше в узкой ветви", "Higher in the narrow branch", "Тар тармақта биік"], ["Запиши высоту установившегося уровня после заполнения.", "Write down the height of the steady level after filling.", "Толтырғаннан кейінгі тұрақты деңгей биіктігін жаз."], ["Если увеличить объём погружённой части тела в воде, выталкивающая сила…", "If the immersed volume of a body in water increases, the buoyant force…", "Суға батырылған дене көлемін арттырса, көтергіш күш…"], ["Возрастёт", "Increases", "Артады"], ["Уменьшится", "Decreases", "Азаяды"], ["Рассчитай силу Архимеда по последнему измерению.", "Calculate the buoyant force from the last measurement.", "Соңғы өлшеу бойынша Архимед күшін есепте."], ["При той же работе, если выполнить её за меньшее время, мощность…", "For the same work, if it is done in less time, the power…", "Бірдей жұмысты азырақ уақытта орындаса, қуат…"], ["Рассчитай мощность турбины по последнему опыту.", "Calculate the turbine power from the last experiment.", "Соңғы тәжірибе бойынша турбина қуатын есепте."], ["При падении капсулы без потерь механическая энергия…", "When a capsule falls without losses, mechanical energy…", "Капсула шығынсыз құлағанда механикалық энергия…"], ["Переходит из потенциальной в кинетическую, а сумма сохраняется", "Turns from potential into kinetic, and the sum is conserved", "Потенциалдықтан кинетикалыққа айналады, ал қосындысы сақталады"], ["Полностью исчезает", "Disappears completely", "Толығымен жоғалады"], ["Только потенциальная энергия растёт", "Only potential energy grows", "Тек потенциалдық энергия артады"], ["Рассчитай начальную потенциальную энергию капсулы mgh.", "Calculate the initial potential energy of the capsule mgh.", "Капсуланың бастапқы потенциалдық энергиясын mgh бойынша есепте."], ["Рычаг находится в равновесии, когда…", "A lever is in equilibrium when…", "Иінтірек тепе-теңдікте болады, егер…"], ["Моменты сил относительно опоры равны", "The moments of force about the pivot are equal", "Тірекке қатысты күш моменттері тең болса"], ["Силы обязательно равны", "The forces are necessarily equal", "Күштер міндетті түрде тең болса"], ["Плечи обязательно равны", "The arms are necessarily equal", "Иіндер міндетті түрде тең болса"], ["Введи процент расхождения моментов в последнем опыте.", "Enter the percentage difference of the moments in the last experiment.", "Соңғы тәжірибедегі моменттер айырмасының пайызын енгіз."], ["ПОЛЕВОЙ ЖУРНАЛ · ФИЗИКА В ДЕЙСТВИИ", "FIELD LOG · PHYSICS IN ACTION", "Далалық журнал · Физика іс үстінде"], ["🧠 До опыта: сформулируй гипотезу", "🧠 Before the experiment: state a hypothesis", "🧠 Тәжірибеге дейін: болжам жаса"], ["↺ Начать протокол заново", "↺ Restart the protocol", "↺ Хаттаманы қайта бастау"], ["Выбери прогноз, затем собери не менее двух разных измерений.", "Choose a prediction, then collect at least two different measurements.", "Болжамды таңда, сосын кемінде екі түрлі өлшеу жина."], ["Сначала зафиксируй прогноз. Проведи минимум два опыта с разными условиями, сравни журнал и вычисли ответ. Повтор запуска не считается.", "First commit to a prediction. Run at least two experiments with different conditions, compare the log and compute the answer. A repeated run does not count.", "Алдымен болжамды бекіт. Әртүрлі шарттармен кемінде екі тәжірибе жаса, журналды салыстырып, жауапты есепте. Қайталап жүргізу есепке алынбайды."], ["📒 Журнал измерений", "📒 Measurement log", "📒 Өлшеу журналы"], ["Проведи несколько опытов и сравни показания.", "Run several experiments and compare the readings.", "Бірнеше тәжірибе жүргізіп, көрсеткіштерді салыстыр."], ["Пока нет измерений — нажми «Провести эксперимент».", "No measurements yet — press “Run experiment”.", "Әзірге өлшеу жоқ — «Тәжірибе жүргізу» түймесін бас."], ["Проведи первый опыт, чтобы получить измерения.", "Run the first experiment to get measurements.", "Өлшеу алу үшін бірінші тәжірибені орында."], ["Сначала выбери гипотезу до получения данных.", "First choose a hypothesis before taking data.", "Алдымен деректерді алмай тұрып болжамды таңда."], ["▶ Провести эксперимент", "▶ Run experiment", "▶ Тәжірибе жүргізу"], ["✅ Проверить решение", "✅ Check solution", "✅ Шешімді тексеру"], ["Вывод по данным:", "Conclusion from data:", "Деректер бойынша қорытынды:"], ["Выбери скорость, маршрут и размер временного шага; сравни пройденный путь и время.", "Choose a speed, a route and a time step; compare the distance covered and the time.", "Жылдамдықты, маршрутты және уақыт қадамын таңда; жүрген жол мен уақытты салыстыр."], ["Выбери один из трёх образцов. Измерь массу на весах и объём вытеснением воды; сравни A и B, а C используй как контроль.", "Choose one of the three samples. Measure the mass on the scales and the volume by water displacement; compare A and B and use C as a control.", "Үш үлгінің біреуін таңда. Массаны таразыда, көлемді суды ығыстыру әдісімен өлше; A мен B-ны салыстырып, C-ны бақылау ретінде қолдан."], ["Выбирай груз массой 1, 2 или 3 кг. Перевези его в разные гравитационные поля и сними показания пружинного динамометра.", "Pick a load of 1, 2 or 3 kg. Move it to different gravitational fields and read the spring dynamometer.", "1, 2 немесе 3 кг жүкті таңда. Оны әртүрлі гравитациялық өрістерге көшіріп, серіппелі динамометрдің көрсеткішін ал."], ["Перемещай датчик по водяному столбу и снимай показания манометра на разных глубинах.", "Move the sensor along the water column and read the manometer at different depths.", "Датчикті су бағаны бойымен жылжытып, әртүрлі тереңдікте манометр көрсеткішін ал."], ["Заполняй резервуар порциями воды. Уровень в двух сообщающихся ветвях будет показан отдельно.", "Fill the tank with portions of water. The level in the two communicating branches is shown separately.", "Резервуарды сумен бөліп-бөліп толтыр. Қатынас екі тармақтағы деңгей жеке көрсетіледі."], ["Изменяй груз и глубину погружения кнопками, наблюдая за динамометром и ватерлинией.", "Change the load and the immersion depth with the buttons while watching the dynamometer and the waterline.", "Түймелермен жүкті және батыру тереңдігін өзгертіп, динамометр мен су сызығын бақыла."], ["Капля движется вдоль дороги со скоростью 6 м/с, автобус в том же направлении — 5 м/с. Сравни показания двух наблюдателей.", "A drop moves along the road at 6 m/s; a bus in the same direction moves at 5 m/s. Compare the readings of the two observers.", "Тамшы жол бойымен 6 м/с жылдамдықпен қозғалады, автобус та сол бағытта — 5 м/с. Екі бақылаушының көрсеткіштерін салыстыр."], ["Перемести конец измерительного стержня нажатием на шкалу. Нулевая отметка закреплена.", "Move the end of the measuring rod by tapping the scale. The zero mark is fixed.", "Өлшеуіш таяқшаның ұшын шкаланы басу арқылы жылжыт. Нөлдік белгі бекітілген."], ["Перемещай опору перетаскиванием или нажатием на балку. Сравни моменты сил.", "Move the fulcrum by dragging or tapping the beam. Compare the moments of force.", "Тіректі сүйреп немесе арқалықты басып жылжыт. Күш моменттерін салыстыр."], ["📏 Снять показание", "📏 Take reading", "📏 Көрсеткіш алу"], ["📟 Снять показание", "📟 Take reading", "📟 Көрсеткіш алу"], ["📐 Сравнить уровни", "📐 Compare levels", "📐 Деңгейлерді салыстыру"], ["💧 Подать воду", "💧 Supply water", "💧 Су беру"], ["⚖️ Взвесить", "⚖️ Weigh", "⚖️ Өлшеу"], ["⚖️ Весы", "⚖️ Scales", "⚖️ Таразы"], ["🧪 Мензурка", "🧪 Beaker", "🧪 Мензурка"], ["Поставить образец", "Place the sample", "Үлгіні қою"], ["Погрузить образец", "Immerse the sample", "Үлгіні батыру"], ["Снять образец", "Take the sample", "Үлгіні алу"], ["Поднять капсулу", "Raise the capsule", "Капсуланы көтеру"], ["▶ Записать 5 секунд", "▶ Record 5 seconds", "▶ 5 секундты жазу"], ["⏱ Выполнить шаг", "⏱ Run a step", "⏱ Қадамды орындау"], ["↺ Новый запуск", "↺ New run", "↺ Жаңа жүгірту"], ["🐢 2 м/с", "🐢 2 m/s", "🐢 2 м/с"], ["Длина детали", "Part length", "Бөлшек ұзындығы"], ["Путь зонда", "Probe distance", "Зонд жолы"], ["Время перелёта", "Flight time", "Ұшу уақыты"], ["Масса образца", "Sample mass", "Үлгі массасы"], ["Объём образца", "Sample volume", "Үлгі көлемі"], ["Сила прижатия N", "Pressing force N", "Басу күші N"], ["Поверхность", "Surface", "Беткі қабат"], ["Сила нагрузки", "Load force", "Жүктеме күші"], ["Площадь опоры", "Support area", "Тірек ауданы"], ["Входная сила F₁", "Input force F₁", "Кіріс күші F₁"], ["Площадь малого поршня", "Small piston area", "Кіші поршень ауданы"], ["Площадь большого поршня", "Large piston area", "Үлкен поршень ауданы"], ["Объём погружённой части", "Immersed volume", "Батырылған бөлік көлемі"], ["Масса груза", "Load mass", "Жүк массасы"], ["Сила поршня", "Piston force", "Поршень күші"], ["Путь поршня", "Piston travel", "Поршень жолы"], ["Время хода", "Stroke time", "Жүріс уақыты"], ["Масса капсулы", "Capsule mass", "Капсула массасы"], ["Высота шахты", "Shaft height", "Шахта биіктігі"], ["Пройденная доля падения", "Fraction of the fall completed", "Құлаудың өтілген үлесі"], ["Сила на левом плече", "Force on the left arm", "Сол иіндегі күш"], ["Плечо приложенной силы", "Arm of the applied force", "Түсірілген күштің иіні"], ["Груз на правом плече", "Load on the right arm", "Оң иіндегі жүк"], ["Плечо груза", "Load arm", "Жүк иіні"], ["Лёд · μ=0,15", "Ice · μ=0.15", "Мұз · μ=0,15"], ["Металл · μ=0,35", "Metal · μ=0.35", "Металл · μ=0,35"], ["Резина · μ=0,60", "Rubber · μ=0.60", "Резеңке · μ=0,60"], ["🟡 Масло", "🟡 Oil", "🟡 Май"], ["💧 Вода", "💧 Water", "💧 Су"], ["🧂 Рассол", "🧂 Brine", "🧂 Тұзды ерітінді"], ["Наблюдатель на дороге", "Observer on the road", "Жолдағы бақылаушы"], ["Пассажир в автобусе", "Passenger in the bus", "Автобустағы жолаушы"], ["🌧️ капля", "🌧️ drop", "🌧️ тамшы"], ["🌍 Земля", "🌍 Earth", "🌍 Жер"], ["🌙 Луна", "🌙 Moon", "🌙 Ай"], ["Груз 1 кг", "Load 1 kg", "Жүк 1 кг"], ["Груз 2 кг", "Load 2 kg", "Жүк 2 кг"], ["Груз 3 кг", "Load 3 kg", "Жүк 3 кг"], ["Старт", "Start", "Бастау"], ["маяк", "beacon", "маяк"], ["маршрут", "route", "маршрут"], ["Начать симуляцию", "Start simulation", "Симуляцияны бастау"], ["Фрагменты ключа:", "Key fragments:", "Кілт фрагменттері:"], ["м", "m", "м"], ["см", "cm", "см"], ["мм", "mm", "мм"], ["см²", "cm²", "см²"], ["см³", "cm³", "см³"], ["дм³", "dm³", "дм³"], ["кг/м³", "kg/m³", "кг/м³"], ["кПа", "kPa", "кПа"], ["Н", "N", "Н"], ["г", "g", "г"], ["Вт", "W", "Вт"], ["Дж", "J", "Дж"], ["м/с", "m/s", "м/с"], ["кг", "kg", "кг"], ["т", "t", "т"], ["— Н", "— N", "— Н"], ["— г", "— g", "— г"], ["— см³", "— cm³", "— см³"], ["Вода", "Water", "Су"], ["Масло", "Oil", "Май"], ["Рассол", "Brine", "Тұздық"], ["Мензурка", "Beaker", "Мензурка"], ["← Назад", "← Back", "← Артқа"], ["Аноним", "Anonymous", "Аноним"], ["⬆ На 10 см", "⬆ Up 10 cm", "⬆ 10 см жоғары"], ["⬇ На 10 см", "⬇ Down 10 cm", "⬇ 10 см төмен"], ["⬆ Поднять на 100 см³", "⬆ Raise by 100 cm³", "⬆ 100 см³ көтеру"], ["⬇ Погрузить на 100 см³", "⬇ Lower by 100 cm³", "⬇ 100 см³ батыру"], ["−100 г груза", "−100 g load", "−100 г жүк"], ["+100 г груза", "+100 g load", "+100 г жүк"], ["0 ├────┼────┼────┼────┼────┤ 100 см", "0 ├────┼────┼────┼────┼────┤ 100 cm", "0 ├────┼────┼────┼────┼────┤ 100 см"], ["Опыт", "Trial", "Тәжірибе"], ["Условия:", "Conditions:", "Шарттар:"], ["Показания:", "Readings:", "Көрсеткіштер:"], ["Связь для расчёта:", "Calculation relation:", "Есептеу байланысы:"], ["Целевое условие выполнено", "Target condition met", "Мақсатты шарт орындалды"], ["Условие пока не выполнено", "Condition not met yet", "Шарт әзірге орындалмады"], ["Сопоставь показания опытов и введи собственный расчёт.", "Compare the readings from both trials and enter your own calculation.", "Тәжірибе көрсеткіштерін салыстырып, өз есебіңді енгіз."], ["l(м) = l(см) ÷ 100", "l(m) = l(cm) ÷ 100", "l(м) = l(см) ÷ 100"], ["Контрольная деталь и шкала длины", "Reference part and the length scale", "Бақылау бөлшегі және ұзындық шкаласы"], ["Длина:", "Length:", "Ұзындық:"], ["Путь:", "Distance:", "Жол:"], ["Время:", "Time:", "Уақыт:"], ["Объём:", "Volume:", "Көлем:"], ["Груз:", "Load:", "Жүк:"], ["Масса:", "Mass:", "Масса:"], ["Снятое показание:", "Measured reading:", "Алынған көрсеткіш:"], ["Измени параметры и запусти эксперимент.", "Change the parameters and start the experiment.", "Параметрлерді өзгертіп, тәжірибені баста."], ["Подсказка:", "Hint:", "Кеңес:"], ["Сначала зафиксируй прогноз, затем сравни два опыта и докажи численный вывод.", "First commit to a prediction, then compare two trials and prove the numerical conclusion.", "Алдымен болжамды бекіт, содан кейін екі тәжірибені салыстырып, сандық қорытындыны дәлелде."], ["Следующая глава →", "Next chapter →", "Келесі тарау →"], ["Выбери прогноз, затем собери не менее двух опытов и подтверди численный вывод.", "Choose a prediction, run at least two trials and confirm the numerical conclusion.", "Болжамды таңда, кемінде екі тәжірибе жасап, сандық қорытындыны раста."], ["Этот запуск уже есть в журнале — измени условие.", "This run is already in the log — change a condition.", "Бұл жүгірту журналда бар — шартты өзгерт."], ["Запись добавлена в журнал.", "Entry added to the log.", "Жазба журналға қосылды."], ["Сравни условия и проведи ещё один опыт.", "Compare the conditions and run one more trial.", "Шарттарды салыстырып, тағы бір тәжірибе жаса."], ["Теперь сделай численный вывод и проверь его вместе с гипотезой.", "Now make a numerical conclusion and check it against your prediction.", "Енді сандық қорытынды жасап, оны болжаммен салыстыр."], ["Сначала сними показание прибора.", "First take a reading from the instrument.", "Алдымен аспаптың көрсеткішін ал."], ["Показание занесено в журнал.", "The reading has been logged.", "Көрсеткіш журналға жазылды."], ["Твой расчёт", "Your calculation", "Сенің есебің"], ["Прогресс пилота", "Pilot progress", "Ұшқыш прогресі"], ["Штаб пилота", "Pilot HQ", "Ұшқыш штабы"], ["Тип миссии", "Mission type", "Миссия түрі"], ["Закрыть", "Close", "Жабу"], ["Удалить", "Delete", "Жою"], ["Ссылка на результат", "Result link", "Нәтиже сілтемесі"], ["Навигация по комиксу", "Comic navigation", "Комикс навигациясы"], ["Вверх", "Up", "Жоғары"], ["Влево", "Left", "Солға"], ["Вправо", "Right", "Оңға"], ["Вниз", "Down", "Төмен"], ["Например: §40. Дополнительный урок", "e.g. §40. Extra lesson", "Мысалы: §40. Қосымша сабақ"], ["Выбери наблюдателя", "Choose an observer", "Бақылаушыны таңда"], ["Наблюдение ещё не записано", "Observation not recorded yet", "Бақылау әзірге жазылмаған"], ["измерение ещё не подтверждено", "measurement not confirmed yet", "өлшем әзірге расталмаған"], ["Записать 5 секунд", "Record 5 seconds", "5 секундты жазу"], ["Снять показание", "Take reading", "Көрсеткішті алу"], ["Подать воду", "Supply water", "Су беру"], ["Сравнить уровни", "Compare levels", "Деңгейлерді салыстыру"], ["Сформулируй прогноз", "Make a prediction", "Болжам жаса"], ["👁️ Ядро Астериона уничтожено!", "👁️ The Asterion core is destroyed!", "👁️ Астерион ядросы жойылды!"], ["📥 Результат ученика получен", "📥 Student result received", "📥 Оқушы нәтижесі алынды"], ["📥 Назначенный урок добавлен по QR-коду", "📥 Assigned lesson added via QR code", "📥 Тағайындалған сабақ QR-код арқылы қосылды"], ["Проверка решения недоступна без эксперимента.", "Verification is unavailable without an experiment.", "Тәжірибесіз шешімді тексеру мүмкін емес."], ["Выбирай для сложного повторного прохождения и тренировки устойчивости.", "Choose it for a tough replay and training your resilience.", "Күрделі қайта өту және төзімділікті жаттықтыру үшін таңда."]];
+  const MAP = new Map();
+  TRIPLES.forEach(t => MAP.set(t[0], { en: t[1], kk: t[2] }));
+  const PIECES = TRIPLES.slice().sort((a, b) => b[0].length - a[0].length);
+  const EN_UNITS = [
+    [/(\d)\s?кг\/м³/g, "$1 kg/m³"],
+    [/(\d)\s?Н·см/g, "$1 N·cm"],
+    [/(\d)\s?кПа/g, "$1 kPa"],
+    [/(\d)\s?см³/g, "$1 cm³"],
+    [/(\d)\s?см²/g, "$1 cm²"],
+    [/(\d)\s?дм³/g, "$1 dm³"],
+    [/(\d)\s?м\/с/g, "$1 m/s"],
+    [/(\d)\s?кг(?![А-Яа-яЁёA-Za-z])/g, "$1 kg"],
+    [/(\d)\s?Дж(?![А-Яа-яЁёA-Za-z])/g, "$1 J"],
+    [/(\d)\s?Вт(?![А-Яа-яЁёA-Za-z])/g, "$1 W"],
+    [/(\d)\s?см(?![А-Яа-яЁёA-Za-z])/g, "$1 cm"],
+    [/(\d)\s?мм(?![А-Яа-яЁёA-Za-z])/g, "$1 mm"],
+    [/(\d)\s?Н(?![А-Яа-яЁёA-Za-z])/g, "$1 N"],
+    [/(\d)\s?г(?![А-Яа-яЁёA-Za-z])/g, "$1 g"],
+    [/(\d)\s?м(?![А-Яа-яЁёA-Za-z])/g, "$1 m"],
+    [/(\d)\s?с(?![А-Яа-яЁёA-Za-z])/g, "$1 s"],
+    [/(\d)\s?т(?![А-Яа-яЁёA-Za-z])/g, "$1 t"]
+  ];
+
+  function enUnits(s) {
+    let out = String(s);
+    if (!/\d/.test(out)) return out;
+    for (const [re, rep] of EN_UNITS) out = out.replace(re, rep);
+    return out;
+  }
+  const pick = (s, L) => { const e = MAP.get(String(s).trim()); return (e && e[L]) || s; };
+  const RULES = [
+    [/^(.+?) · уровень (\d+)$/, (m, r, n) => ({ en: pick(r, "en") + " · level " + n, kk: pick(r, "kk") + " · деңгей " + n })],
+    [/^(\d+) \/ (\d+) XP до следующего уровня$/, (m, a, b) => ({ en: a + " / " + b + " XP to the next level", kk: a + " / " + b + " XP келесі деңгейге дейін" })],
+    [/^Попытки: (\d+) \/ (\d+)$/, (m, a, b) => ({ en: "Attempts: " + a + " / " + b, kk: "Әрекеттер: " + a + " / " + b })],
+    [/^Подсказки: (\d+)$/, (m, a) => ({ en: "Hints: " + a, kk: "Кеңестер: " + a })],
+    [/^Фрагмент (\d+) из (\d+) получен/, (m, a, b) => ({ en: "Fragment " + a + " of " + b + " obtained", kk: a + " / " + b + " фрагмент алынды" })],
+    [/^Задание #(\d+)$/, (m, a) => ({ en: "Task #" + a, kk: "Тапсырма #" + a })],
+    [/^(\d+(?:[.,]\d+)?) м · маяк$/, (m, n) => ({ en: n + " m · beacon", kk: n + " м · маяк" })],
+    [/^([ABC]) · (.+)$/, (m, k, rest) => ({ en: k + " · " + pick(rest, "en"), kk: k + " · " + pick(rest, "kk") })],
+    [/^Скорость: (.+?) · шаг (.+)$/, (m, v, st) => ({ en: "Speed: " + enUnits(v) + " · step " + enUnits(st), kk: "Жылдамдық: " + v + " · қадам " + st })],
+    [/^Жидкость: (.+?) · ρ=(.+)$/, (m, f, r) => ({ en: "Liquid: " + pick(f, "en") + " · ρ=" + enUnits(r), kk: "Сұйықтық: " + pick(f, "kk") + " · ρ=" + r })],
+    [/^(.+?) · (\d+) заданий\. Выбери режим миссии\.$/, (m, n, c) => ({ en: n + " · " + c + " tasks. Choose the mission mode.", kk: n + " · " + c + " тапсырма. Миссия режимін таңда." })],
+    [/^(\d+) в очереди$/, (m, n) => ({ en: n + " in queue", kk: "кезекте " + n })],
+    [/^(.+?) · (.+?) LVL (\d+)$/, (m, a, b, n) => ({ en: pick(a, "en") + " · " + pick(b, "en") + " LVL " + n, kk: pick(a, "kk") + " · " + pick(b, "kk") + " LVL " + n })],
+    [/^(.+?) · (\d+)\/(\d+)$/, (m, a, x, y) => ({ en: pick(a, "en") + " · " + x + "/" + y, kk: pick(a, "kk") + " · " + x + "/" + y })],
+    [/^🎉 Новое звание! Уровень (\d+) · \+1 очко навыка$/, (m, n) => ({ en: "🎉 New rank! Level " + n + " · +1 skill point", kk: "🎉 Жаңа дәреже! " + n + "-деңгей · +1 дағды ұпайы" })],
+    [/^Путь: (.+)$/, (m, v) => ({ en: "Distance: " + enUnits(v), kk: "Жол: " + v })],
+    [/^Время: (.+)$/, (m, v) => ({ en: "Time: " + enUnits(v), kk: "Уақыт: " + v })],
+    [/^Скорость: (.+?)(?: · шаг (.+))?$/, (m, v, st) => ({ en: "Speed: " + enUnits(v) + (st ? " · step " + enUnits(st) : ""), kk: "Жылдамдық: " + v + (st ? " · қадам " + st : "") })],
+    [/^Масса: (.+)$/, (m, v) => ({ en: "Mass: " + enUnits(v), kk: "Масса: " + v })],
+    [/^Объём: (.+)$/, (m, v) => ({ en: "Volume: " + enUnits(v), kk: "Көлем: " + v })],
+    [/^Груз: (.+)$/, (m, v) => ({ en: "Load: " + enUnits(v), kk: "Жүк: " + v })],
+    [/^Fₐ: (.+)$/, (m, v) => ({ en: "Fₐ: " + enUnits(v), kk: "Fₐ: " + v })],
+    [/^P груза: (.+)$/, (m, v) => ({ en: "Load weight P: " + enUnits(v), kk: "Жүк салмағы P: " + v })],
+    [/^Левая ветвь: (.+)$/, (m, v) => ({ en: "Left branch: " + enUnits(v), kk: "Сол тармақ: " + v })],
+    [/^Правая ветвь: (.+)$/, (m, v) => ({ en: "Right branch: " + enUnits(v), kk: "Оң тармақ: " + v })],
+    [/^Жидкость: (.+?) · ρ=(.+)$/, (m, f, r) => ({ en: "Liquid: " + pick(f, "en") + " · ρ=" + enUnits(r), kk: "Сұйықтық: " + pick(f, "kk") + " · ρ=" + r })],
+    [/^Скорость капли относительно дороги: (.+)$/, (m, v) => ({ en: "Speed of the drop relative to the road: " + enUnits(v), kk: "Тамшының жолға қатысты жылдамдығы: " + v })],
+    [/^🎯 Маршрут (\d+) м$/, (m, n) => ({ en: "🎯 Route " + n + " m", kk: "🎯 Маршрут " + n + " м" })],
+    [/^Шаг (\d+) с$/, (m, n) => ({ en: "Step " + n + " s", kk: "Қадам " + n + " с" })],
+    [/^Образец ([ABC])$/, (m, k) => ({ en: "Sample " + k, kk: "Үлгі " + k })],
+    [/^Гипотеза: (зафиксирована|не выбрана) · Различных опытов: (\d+)\/(\d+) · Численный вывод: (сходится|проверь данные)$/, (m, st, a, b, res) => ({ en: "Prediction: " + (st === "зафиксирована" ? "committed" : "not chosen") + " · Distinct trials: " + a + "/" + b + " · Numerical conclusion: " + (res === "сходится" ? "matches" : "check the data"), kk: "Болжам: " + (st === "зафиксирована" ? "бекітілді" : "таңдалмады") + " · Түрлі тәжірибелер: " + a + "/" + b + " · Сандық қорытынды: " + (res === "сходится" ? "сәйкеседі" : "деректерді тексер") })],
+    [/^Опыт (\d+) ([✓·])$/, (m, n, mark) => ({ en: "Trial " + n + " " + mark, kk: "Тәжірибе " + n + " " + mark })],
+    [/^🎯 Маршрут (\d+) м$/, (m, n) => ({ en: "🎯 Route " + n + " m", kk: "🎯 Маршрут " + n + " м" })],
+    [/^📒 (Запись добавлена в журнал\.|Этот запуск уже есть в журнале — измени условие\.) Различных опытов: (\d+) \/ (\d+)\. (.+)$/, (m, head, a, b, tail) => ({ en: "📒 " + (head.indexOf("Запись") === 0 ? "Entry added to the log." : "This run is already in the log — change a condition.") + " Distinct trials: " + a + " / " + b + ". " + (tail.indexOf("Сравни") === 0 ? "Compare the conditions and run one more trial." : "Now make a numerical conclusion and check it against your prediction."), kk: "📒 " + (head.indexOf("Запись") === 0 ? "Жазба журналға қосылды." : "Бұл жүгірту журналда бар — шартты өзгерт.") + " Түрлі тәжірибелер: " + a + " / " + b + ". " + (tail.indexOf("Сравни") === 0 ? "Шарттарды салыстырып, тағы бір тәжірибе жаса." : "Енді сандық қорытынды жасап, оны болжаммен салыстыр.") })],
+    [/^×(\d+(?:\.\d+)?) XP · до \+(\d+) 💎$/, (m, a, b) => ({ en: "×" + a + " XP · up to +" + b + " 💎", kk: "×" + a + " XP · +" + b + " 💎 дейін" })]
+  ];
+  const orig = new WeakMap();
+  const applied = new WeakMap();
+  const attrOrig = new WeakMap();
+  const busy = { on: false };
+  function lang() { return (typeof I18n !== "undefined" && I18n.currentLang) || "ru"; }
+
+  function translate(value) {
+    const L = lang();
+    if (L === "ru" || !value) return value;
+    const trimmed = value.trim();
+    if (!trimmed) return value;
+    let out = null;
+    const exact = MAP.get(trimmed);
+    if (exact && exact[L]) out = exact[L];
+    if (out === null) {
+      for (const rule of RULES) {
+        const m = trimmed.match(rule[0]);
+        if (m) { const r = rule[1](...m); if (r && r[L]) { out = r[L]; break; } }
+      }
+    }
+    if (out === null) {
+      let s = trimmed;
+      const idx = L === "en" ? 1 : 2;
+      for (const p of PIECES) {
+        if (p[0].length < 12 && !/[:：]$/.test(p[0])) continue;
+        if (s.indexOf(p[0]) !== -1 && p[idx]) s = s.split(p[0]).join(p[idx]);
+      }
+      if (L === "en" && /\d/.test(s) && s.length <= 32) {
+        for (const [re, rep] of EN_UNITS) s = s.replace(re, rep);
+      }
+      if (s === trimmed) return value;
+      out = s;
+    }
+    return value.replace(trimmed, out);
+  }
+
+  function handleText(node) {
+    const parent = node.parentElement;
+    if (!parent) return;
+    const tag = parent.tagName;
+    if (tag === "SCRIPT" || tag === "STYLE" || tag === "TEXTAREA") return;
+    if (parent.closest("[data-i18n]")) return;
+    const cur = node.nodeValue;
+    if (!cur) return;
+
+    if (lang() === "ru") {
+      const saved = orig.get(node);
+      if (saved !== undefined && saved !== cur) { node.nodeValue = saved; applied.delete(node); }
+      return;
+    }
+    if (!/[А-Яа-яЁёҚқҒғҮүҰұӨөӘәІіҢңA-Za-z]/.test(cur)) return;
+
+    const lastApplied = applied.get(node);
+    let src = orig.get(node);
+    if (src === undefined || (lastApplied !== undefined && cur !== lastApplied && cur !== src)) {
+      src = cur;
+      orig.set(node, cur);
+      applied.delete(node);
+    }
+    const next = translate(src);
+    if (next !== cur) {
+      applied.set(node, next);
+      node.nodeValue = next;
+    } else if (next === cur) {
+      applied.set(node, cur);
+    }
+  }
+
+  function handleAttrs(el) {
+    if (!el || el.nodeType !== 1) return;
+    let store = attrOrig.get(el);
+    ["placeholder", "title", "aria-label", "alt"].forEach(attr => {
+      if (!el.hasAttribute(attr)) return;
+      const base = store && store[attr] !== undefined ? store[attr] : el.getAttribute(attr);
+      if (!base) return;
+      if (lang() === "ru") {
+        if (store && store[attr] !== undefined) el.setAttribute(attr, store[attr]);
+        return;
+      }
+      if (!store) { store = {}; attrOrig.set(el, store); }
+      if (store[attr] === undefined) store[attr] = base;
+      const next = translate(store[attr]);
+      if (next !== store[attr]) el.setAttribute(attr, next);
+    });
+  }
+
+  function scan(root) {
+    if (busy.on) return;
+    const target = root && root.nodeType === 1 ? root : document.body;
+    if (!target) return;
+    busy.on = true;
+    try {
+      handleAttrs(target);
+      const walk = document.createTreeWalker(target, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, null);
+      let n = walk.nextNode();
+      while (n) {
+        if (n.nodeType === 3) handleText(n); else handleAttrs(n);
+        n = walk.nextNode();
+      }
+    } finally { busy.on = false; }
+  }
+
+  let timer = null;
+  function schedule() {
+    if (timer) return;
+    timer = setTimeout(() => { timer = null; scan(document.body); }, 20);
+  }
+
+  function hook() {
+    if (typeof I18n !== "undefined" && !I18n.__pqL10nHooked) {
+      const baseApply = I18n.apply.bind(I18n);
+      I18n.apply = function () { baseApply(); schedule(); };
+      const baseSet = I18n.setLanguage.bind(I18n);
+      I18n.setLanguage = function (l) { baseSet(l); setTimeout(() => scan(document.body), 30); };
+      I18n.__pqL10nHooked = true;
+    }
+    scan(document.body);
+    try {
+      new MutationObserver(muts => {
+        if (busy.on || lang() === "ru") return;
+        for (const m of muts) { if (m.type === "childList" || m.type === "characterData") { schedule(); return; } }
+      }).observe(document.body, { childList: true, subtree: true, characterData: true });
+    } catch (_) {}
+  }
+
+  window.addEventListener("load", () => setTimeout(hook, 350));
+  window.PQ_UI_L10N = { scan, translate, map: MAP };
 })();
 </script>
 <script>window.addEventListener("load",()=>MaintenanceReview.init(),{once:true});</script>
